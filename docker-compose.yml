@@ -1,0 +1,37 @@
+services:
+
+  postgres:
+    image: postgres:15
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=eshop
+      - POSTGRES_USER=shopkeeper
+      - POSTGRES_PASSWORD=shopkeeper
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shopkeeper -d eshop"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  web:
+    build: .
+    command: ["python", "/code/eshop/manage.py", "runserver",
+              "0.0.0.0:8000"]
+    restart: always
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_SETTINGS_MODULE=eshop.settings.local
+      - POSTGRES_DB=eshop
+      - POSTGRES_USER=shopkeeper
+      - POSTGRES_PASSWORD=shopkeeper
+    depends_on:
+      postgres:
+        condition: service_healthy
