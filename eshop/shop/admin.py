@@ -6,8 +6,7 @@ from .models import Category, Product
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug']
     
-    def get_prepopulated_fields(self, request, obj=None):
-        return {'slug': ['name']}
+    prepopulated_fields = {'slug': ['name']}
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
@@ -16,5 +15,4 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ['available', 'created', 'updated']
     list_editable = ['available', 'price']
 
-    def get_prepopulated_fields(self, request, obj=None):
-        return {'slug': ['name']}
+    prepopulated_fields = {'slug': ['name']}
