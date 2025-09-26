@@ -4,7 +4,7 @@ from . import views
 
 app_name = 'shop'
 
-urlpatterns += [
+urlpatterns = [
     path('', views.product_list, name='product_list'),
     # for defined category
     path('<slug:category_slug>', views.product_list,
