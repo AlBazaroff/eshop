@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class Catalog(models.Model):
+class Category(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200)
 
@@ -14,13 +14,14 @@ class Product(models.Model):
     slug = models.SlugField(max_length=200)
     description = models.TextField(blank=True)
 
-    category = models.ForeignKey(Catalog,
+    category = models.ForeignKey(Category,
                                  related_name='products',
                                  on_delete=models.CASCADE)
-    
+    image = models.ImageField(upload_to='products/%Y/%m/%d')
     price = models.DecimalField(max_digits=10,
                                 decimal_places=2)
     available = models.BooleanField(default=True)
+    
     
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
