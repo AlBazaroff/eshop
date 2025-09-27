@@ -1,0 +1,56 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% load thumbnail %}
+
+{% block title %}
+    {% if category %}{{ category.name }}{% else %}Products{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-2">
+    <ul class="nav nav-pills flex-column">
+      <li class="nav-item">
+        <a
+          href="{% url 'shop:product_list' %}"
+          class="nav-link{% if not category %} active{% endif %}"
+        >
+          All
+        </a>
+      </li>
+      {% for cat in categories %}
+      <li class="nav-item">
+        <a href="{{ cat.get_absolute_url }}"
+          class="nav-link{% if category.slug == cat.slug %} active{% endif %}">
+          {{ cat.name }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="col" id="product-list">
+    <table class="table-light w-100">
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td class="text-center">
+                        <a href="{{ product.get_absolute_url }}">
+                            {% thumbnail product.image '200x200' crop='center' as im %}
+                            <img src="{% if product.image %}{{ im.url }}{% else %}{% static 'img/no_image_available.jpg' %}{% endif %}">
+                        </a>
+                    </td>
+                    <td class="align-top pt-5">
+                        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                    </td>
+                    <td class="align-top pt-5">
+                        ${{ product.price }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
