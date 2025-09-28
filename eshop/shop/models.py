@@ -40,6 +40,7 @@ class Product(models.Model):
             models.Index(fields=['id', 'slug']),
             models.Index(fields=['name']),
             models.Index(fields=['-created']),
+            # add index for price, for sorting in the future
         ]
     
     def __str__(self):

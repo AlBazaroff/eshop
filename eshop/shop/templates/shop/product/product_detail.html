@@ -3,9 +3,37 @@
 {% load thumbnail %}
 
 {% block title %}
-    Product
+    {{ product.name }}
 {% endblock %}
 
 {% block content %}
-    
+    <div class="container">
+        <h2 class="pt-4">{{ product.name }}</h2>
+        <div class="row pt-4">
+            <div class="col-3" id="image">
+                {% thumbnail product.image 300x300 as im %}
+                <img src="{% if product.image %}{{ im.url }}{% else %}{% static 'img/no_image_available.jpg' %}{% endif %}">
+            </div>
+            <div class="col">
+                <div class="container-fluid">
+                    <p class="fs-6" id="description">
+                        {{ product.description }}
+                    </p>
+                </div>
+                <div class="container-fluid pt-4">
+                    <p class="text-end fw-bold fs-4" id="price">
+                        ${{ product.price }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <form action="" method="post">
+            <!-- Add functions for form, when add cart -->
+             <div class="text-end">
+                <input type="submit" class="btn btn-primary" value="Add to cart">
+             </div>
+        </form>
+    </div>
 {% endblock %}
