@@ -6,5 +6,9 @@
 {% endblock %}
 
 {% block content %}
-
+    {% if cart.cart %}
+        123
+    {% else %}
+        Your cart is empty.
+    {% endif %}
 {% endblock %}
