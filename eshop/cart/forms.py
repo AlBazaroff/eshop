@@ -2,7 +2,7 @@ from django.forms import forms
 
 PRODUCT_QUANTITIES = [(i, str(i)) for i in range(1,11)]
 
-class CartAddProduct(forms.Form):
+class CartAddProductForm(forms.Form):
     """
     Adding product to cart form
     """

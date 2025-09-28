@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'shop.apps.ShopConfig',
     'cart.apps.CartConfig',
     'easy_thumbnails',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -131,3 +133,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # SESSION FOR CART
 CART_SESSION_ID = 'cart'
+
+# CRISPY FORMS SETTINGS
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
