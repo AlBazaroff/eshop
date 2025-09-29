@@ -7,7 +7,8 @@ class CartAddProductForm(forms.Form):
     Adding product to cart form
     """
     quantity = forms.TypedChoiceField(choices=PRODUCT_QUANTITIES,
-                                     coerce=int)
+                                     coerce=int,
+                                     )
     override = forms.BooleanField(required=False,
                                   initial=False,
                                   widget=forms.HiddenInput)

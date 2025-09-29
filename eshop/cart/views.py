@@ -32,6 +32,7 @@ def remove_cart(request, product_id):
     cart.remove(product)
     return redirect('cart:detail')
 
+@require_POST
 def clear_cart(request):
     """
     Clear all from cart
@@ -45,5 +46,10 @@ def cart_detail(request):
     Cart's detail
     """
     cart = Cart(request)
+    for item in cart:
+        item['update_quantity_form'] = CartAddProductForm(initial={
+            'quantity': item['quantity'],
+            'override': True
+        })
     return render(request, 'cart/detail.html',
                   {'cart': cart})
