@@ -75,8 +75,7 @@
             <a href="{% url 'cart:clear_cart' %}" class="btn btn-danger">
                 Clear
             </a>
-            <!-- After create order, add url -->
-            <a href="#" class="btn btn-primary">Checkout</a>
+            <a href="{% url 'orders:create_order' %}" class="btn btn-primary">Checkout</a>
         </div>
     {% else %}
         <h2 class="text-center mt-5"  style="min-height: 200px;">

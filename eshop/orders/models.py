@@ -6,6 +6,12 @@ class Order(models.Model):
     """
     Serve for users orders
     """
+    # replace first_name, last_name, email
+    # after adding auth
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    email = models.EmailField()
+
     city = models.CharField(max_length=30)
     address = models.CharField(max_length=150)
     postal_code = models.CharField(max_length=10)
