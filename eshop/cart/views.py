@@ -13,7 +13,7 @@ def add_cart(request, product_id):
     cart = Cart(request)
     product = get_object_or_404(Product,
                                 id=product_id)
-    form = CartAddProductForm()
+    form = CartAddProductForm(request.POST)
     if form.is_valid():
         cd = form.cleaned_data
         cart.add(product=product,
@@ -31,6 +31,14 @@ def remove_cart(request, product_id):
                                 id=product_id)
     cart.remove(product)
     return redirect('cart:detail')
+
+def clear_cart(request):
+    """
+    Clear all from cart
+    """
+    cart = Cart(request)
+    cart.clear()
+    return redirect('shop:product_list')
 
 def cart_detail(request):
     """

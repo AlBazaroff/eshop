@@ -13,7 +13,7 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
   </head>
-  <body>
+  <body class="d-flex flex-column min-vh-100">
     <header class="container-fluid" id="header">
       <div
         class="row align-items-start bg-light text-white py-3"
@@ -40,20 +40,23 @@
               G
             </a>
           </div>
-          <!-- After module cart add code -->
-          <a href="#" class="btn btn-outline-primary me-5 ms-1">Cart</a>
+          <a href="{% url 'cart:detail' %}" class="btn btn-outline-primary me-5 ms-1">Cart</a>
         </div>
       </div>
     </header>
 
-    <main class="container-fluid pb-4 h-100" id="content">
-      {% block content %} {% endblock %}
+    <main class="flex-grow-1" id="content">
+      <div class="container-fluid pb-4">
+        {% block content %} {% endblock %}
+      </div>
     </main>
 
-    <footer class="container fixed-bottom" id="footer">
-      <p class="text-center" style="height: 24px">
-        &copy; 2024 My site. All rights is protected.
-      </p>
+    <footer class="bg-light py-3 mt-auto" id="footer">
+      <div class="container fixed-bottom">
+        <p class="text-center mb-0">
+          &copy; 2024 My site. All rights is protected.
+        </p>
+      </div>
     </footer>
   </body>
 </html>

@@ -1,14 +1,64 @@
 {% extends 'shop/base.html' %}
 {% load static %}
+{% load thumbnail %}
 
 {% block title %}
     Cart
 {% endblock %}
 
 {% block content %}
-    {% if cart.cart %}
-        123
+    {% if cart %}
+    <div class="conainer-fluid mt-4 fw-bold text-start fs-6"></div>
+        <table class="container-fluid mt-4">
+            <tbody>
+                {% for item in cart %}
+                    {% with product=item.product %}
+                    <tr>
+                        <td class="text-center">
+                            {% thumbnail product.image 200x200 as im %}
+                            <img
+                            src="{% if product.image %}{{ im.url }}{% else %}{% static 'img/no_image_available.jpg' %}{% endif %}"
+                            style="width: 200px; height:200 px;">
+                        </td>
+                        <td class="">
+                            <h5>
+                                <a class='text-decoration-none' href="{{ product.get_absolute_url }}">
+                                    {{ product.name }}
+                                </a>
+                            </h5>
+                            <p>{{ product.description|truncatewords:20|linebreaks }}</p>
+                        </td>
+                        <td class="text-center">
+                            <!-- Add button for updating and removing -->
+                            Remove
+                            {{ item.quantity }}
+                            Update
+                        </td>
+                        <td>
+                            ${{ item.price }} <span style="font-size:x-small">per unit</span>
+                        </td>
+                        <td class="text-center text-bold fw-bold fs-5">
+                            ${{ item.total_price }}
+                        </td>
+                    </tr>
+                    {% endwith %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="container-fluid text-end mt-4">
+            <p>
+                In your cart {{ cart|length }} item{{ cart|length|pluralize:'s' }}
+            </p>
+            <p class="fs-4">
+                Total cost: 
+                <span class="fw-bold">${{ cart.total_price }}</span>
+            </p>
+            <a href="{% url 'cart:clear_cart' %}" class="btn btn-danger">Clear</a>
+            <a href="#" class="btn btn-primary">Checkout</a>
+        </div>
     {% else %}
-        Your cart is empty.
+        <h2 class="text-center mt-5"  style="min-height: 200px;">
+            Your cart is empty...
+        </h2>
     {% endif %}
 {% endblock %}

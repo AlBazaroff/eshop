@@ -24,15 +24,15 @@ class Cart:
         product_id = str(product.id)
         if product_id not in self.cart:
             self.cart[product_id] = {'quantity': 0,
-                                     'price': product.price}
+                                     'price': str(product.price)}
         # if in the cart we change item's quantity
         if override_quantity:
             self.cart[product_id]['quantity'] = quantity
         else:
             self.cart[product_id]['quantity'] += quantity
         # if price was changed
-        if self.cart[product_id]['price'] != product.price:
-            self.cart[product_id]['price'] = product.price
+        if self.cart[product_id]['price'] != str(product.price):
+            self.cart[product_id]['price'] = str(product.price)
         self.save()
 
     def save(self):
@@ -66,9 +66,9 @@ class Cart:
         # save temp product in cart
         temp_cart = self.cart.copy()
         for product in products:
-            temp_cart[str(product.id)][product] = product
+            temp_cart[str(product.id)]['product'] = product
 
-        for item in temp_cart.values:
+        for item in temp_cart.values():
             item['price'] = Decimal(item['price'])
             item['total_price'] = Decimal(item['price']) * item['quantity']
             yield item
@@ -79,4 +79,4 @@ class Cart:
         in the cart 
         """
         return sum(item['quantity']
-                   for item in self.cart.value())
+                   for item in self.cart.values())
