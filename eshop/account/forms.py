@@ -7,11 +7,13 @@ class EmailAuthenticationForm(AuthenticationForm):
         label='Email',
         widget=forms.EmailInput(attrs={
             'autofocus': True,
-            'placeholder': 'Enter your email'
+            'class': 'form-control',
+            'placeholder': 'Enter your email',
         })
     )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.values():
-            field.widget.attrs['class'] = 'form-control'
+        self.fields['password'].widget.attrs.update({
+            'class': 'form-control',
+            'placeholder': 'Enter your password'})

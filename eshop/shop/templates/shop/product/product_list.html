@@ -60,7 +60,7 @@
                 <tr>
                     <td class="text-center">
                         <a href="{{ product.get_absolute_url }}">
-                            {% thumbnail product.image '200x200' crop='center' as im %}
+                            {% thumbnail product.image '200x200' as im %}
                             <img src="{% if product.image %}{{ im.url }}{% else %}{% static 'img/no_image_available.jpg' %}{% endif %}">
                         </a>
                     </td>

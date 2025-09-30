@@ -111,6 +111,9 @@ AUTHENTICATION_BACKENDS = [
     'account.backends.EmailBackend',
 ]
 
+LOGIN_REDIRECT_URL = 'shop:product_list'
+LOGIN_URL = 'account/login'
+LOGOUT_URL = 'account/logout'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -142,4 +145,9 @@ MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # SESSION FOR CART
+
 CART_SESSION_ID = 'cart'
+
+# THUMBNAIL
+
+THUMBNAIL_BASEDIR = 'thumbs'
