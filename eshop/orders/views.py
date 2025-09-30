@@ -1,10 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 
 from .models import Order, OrderItem
 from .forms import OrderCreateForm
 from cart.cart import Cart
 
 def create_order(request):
+    """
+    Create order by cart
+    """
     cart = Cart(request)
     if request.method == 'POST':
         create_form = OrderCreateForm(request.POST)
@@ -16,9 +20,11 @@ def create_order(request):
                                          price=item['price'],
                                          quantity=item['quantity'])
             cart.clear()
-            return render(request,
-                          'orders/create_order.html',
-                          {'order': order})
+            messages.success(
+                request,
+                f'Your order №{order.id} successfully created'
+            )
+            return redirect('shop:product_list')
     else:
         create_form = OrderCreateForm()
     return render(request,

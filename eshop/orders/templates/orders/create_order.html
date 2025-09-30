@@ -5,4 +5,51 @@
 {% endblock %}
 
 {% block content %}
+    <div class="container pt-5 pb-5">
+        <h2>Create order</h2>
+        <div class="row">
+            <div class="col-8">
+                <form class="w-50"
+                action="{% url 'orders:create_order' %}"
+                method="post">
+                    {% csrf_token %}
+                    {{ create_order_form.as_p }}
+                    <input type="submit" class="btn btn-success"
+                    value="Checkout">
+                </form>
+            </div>
+            <div class="col">
+                <div class="bg-light p-4">
+                    <h4 class="pb-3">Order details:</h4>
+                    <table class="w-100">
+                        <tbody style="font-size: small">
+                            {% for item in cart %}
+                                <tr class="border-bottom">
+                                    <td>
+                                        {{ item.product.name|truncatewords:2 }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ item.quantity}}
+                                    </td>
+                                    <td class="text-end fw-bold">
+                                        ${{ item.total_price }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="mt-5 fs-4">
+                            <tr>
+                                <td>
+                                    Summary:
+                                </td>
+                                <td class="text-end fw-bold" colspan="2">
+                                    ${{ cart.total_price }}
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

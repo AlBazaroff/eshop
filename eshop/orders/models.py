@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import RegexValidator
 
 from shop.models import Product
 
@@ -11,6 +12,20 @@ class Order(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     email = models.EmailField()
+    # phone with validator
+    # instead, can use django-phonenumber-field
+    phone = models.CharField(
+        max_length=17,
+        blank=True,
+        validators=[
+            RegexValidator(
+            regex=r'^\+?1?\d{9,15}$',
+            message="Phone number must be in format: '+999999999'.\
+                Up to 15 digits allowed."
+            )
+        ],
+        verbose_name='Phone Number'
+    )
 
     city = models.CharField(max_length=30)
     address = models.CharField(max_length=150)

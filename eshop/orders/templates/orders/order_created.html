@@ -1,0 +1,15 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+    Order created
+{% endblock %}
+
+{% block content %}
+    <div class="container pt-5 align-center text-center">
+        <h1 class="fw-bold">Your order successfully created</h1>
+        <p>Wait while order will be completed. Your order is
+            <span class="fw-bold">{{ order_id }}</span>
+        </p>
+    </div>
+
+{% endblock %}
