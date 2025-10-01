@@ -44,7 +44,7 @@
             </a>
             {% else %}
               <a href="{% url 'account:logout' %}" class="btn btn-outline-primary">Logout</a>
-              <a href="#" class="btn btn-outline-primary"><i class="bi bi-person-circle"></i></a>
+              <a href="{% url 'account:edit_user' %}" class="btn btn-outline-primary"><i class="bi bi-person-circle"></i></a>
             {% endif %}
             
           </div>
