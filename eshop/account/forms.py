@@ -1,6 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, \
+                                      PasswordResetForm
+from django.contrib.auth import get_user_model
 from .models import User
 
 class EmailAuthenticationForm(AuthenticationForm):
@@ -47,3 +48,15 @@ class UserRegistrationForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+
+class EmailPasswordResetForm(PasswordResetForm):
+    """ 
+    Password reset by email
+    """
+    def get_users(self, email):
+        User = get_user_model()
+        active_users = User.objects.filter(
+            email__iexact=email,
+            is_active=True
+        )
+        return active_users
