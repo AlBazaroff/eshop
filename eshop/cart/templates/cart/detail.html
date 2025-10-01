@@ -15,10 +15,14 @@
                     {% with product=item.product %}
                     <tr>
                         <td class="text-center">
-                            {% thumbnail product.image 200x200 as im %}
-                            <img
-                            src="{% if product.image %}{{ im.url }}{% else %}{% static 'img/no_image_available.jpg' %}{% endif %}"
-                            style="width: 200px; height:200 px;">
+                            {% if product.image %}
+                                {% thumbnail product.image 200x200 as im %}
+                                <img src="{{ im.url }}">
+                            {% else %}
+                                <img
+                                src="{% static 'img/no_image_available.jpg' %}"
+                                style="max-width: 150px; max-height:150 px;">
+                            {% endif %}
                         </td>
                         <td class="">
                             <h5>

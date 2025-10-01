@@ -10,8 +10,8 @@
     <div class="container">
         <h2 class="pt-4">{{ product.name }}</h2>
         <div class="row pt-4">
-            <div class="col-3" id="image">
-                {% thumbnail product.image 300x300 as im %}
+            <div class="col-3 text-center" id="image">
+                {% thumbnail product.image 250x250 as im %}
                 <img src="{% if product.image %}{{ im.url }}{% else %}{% static 'img/no_image_available.jpg' %}{% endif %}">
             </div>
             <div class="col">
@@ -28,7 +28,7 @@
             </div>
         </div>
     </div>
-    <div class="container h-10-10">
+    <div class="container h-10-10 pb-4">
         <form action="{% url 'cart:add_cart' product.id %}" method="post">
             <!-- Add functions for form, when add cart -->
              <div class="text-end">

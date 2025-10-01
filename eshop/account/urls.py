@@ -6,6 +6,11 @@ from . import views
 app_name = 'account'
 
 urlpatterns = [
-    path('account/login/', views.LoginView.as_view(), name='login'),
-    path('account/logout/', views.custom_logout, name='logout'),
+     path('login/', views.LoginView.as_view(), name='login'),
+     path('logout/', views.custom_logout, name='logout'),
+     path('password-change/', auth_views.PasswordChangeView.as_view(),
+          name='password_change'),
+     path('password-reset/', auth_views.PasswordResetView.as_view(),
+          name='password_reset'),
+     path('register/', views.register, name='register'),
 ]

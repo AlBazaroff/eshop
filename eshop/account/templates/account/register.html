@@ -1,0 +1,42 @@
+{% extends 'account/base.html' %}
+
+{% block title %}
+    Registration
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+        <form class="position-relative bg-white p-4 rounded shadow-sm d-flex flex-column w-25" method="POST">
+            <a class="btn position-absolute top-0 start-100 translate-middle badge rounded bg-danger"
+            href="{% url 'shop:product_list' %}">
+                <i class="bi bi-x-circle"></i>
+            </a>
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Email:</label>
+                {{ register_form.email }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">First name:</label>
+                {{ register_form.first_name }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Last name:</label>
+                {{ register_form.last_name }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password:</label>
+                {{ register_form.password1 }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Confirm password:</label>
+                {{ register_form.password2 }}
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-success m-2 rounded">Register</button>
+                <a class="btn btn-danger m-2 rounded" href="{% url 'shop:product_list' %}">Cancel</a>
+            </div>
+            <a class="text-center" href="{% url 'account:login' %}">Already have an account?</a>
+        </form>
+    </div>
+{% endblock %}

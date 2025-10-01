@@ -22,7 +22,7 @@ def create_order(request):
             cart.clear()
             messages.success(
                 request,
-                f'Your order №{order.id} successfully created'
+                f'Your order successfully created. Order №{order.id}'
             )
             return redirect('shop:product_list')
     else:

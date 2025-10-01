@@ -112,7 +112,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 LOGIN_REDIRECT_URL = 'shop:product_list'
-LOGIN_URL = 'account/login'
+LOGIN_URL = 'account:login'
 LOGOUT_URL = 'account/logout'
 
 # Internationalization
