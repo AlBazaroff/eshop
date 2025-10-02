@@ -1,5 +1,10 @@
+x-environment: &common-environment
+  DJANGO_SETTINGS_MODULE: eshop.settings.local
+  POSTGRES_DB: eshop
+  POSTGRES_USER: shopkeeper
+  POSTGRES_PASSWORD: shopkeeper
+  RABBITMQ_URL: amqp://shopkeeper:shopkeeper@rabbitmq:5672/
 services:
-
   postgres:
     image: postgres:15
     volumes:
@@ -46,14 +51,53 @@ services:
       - .:/code
     ports:
       - "8000:8000"
-    environment:
-      - DJANGO_SETTINGS_MODULE=eshop.settings.local
-      - POSTGRES_DB=eshop
-      - POSTGRES_USER=shopkeeper
-      - POSTGRES_PASSWORD=shopkeeper
-      - RABBITMQ_URL=amqp://shopkeeper:shopkeeper@rabbitmq:5672/
+    environment: *common-environment
     depends_on:
       rabbitmq:
         condition: service_healthy
       postgres:
         condition: service_healthy
+
+  celery_worker:
+    build: .
+    command: ['celery', '-A', 'eshop', 'worker', '-l', 'info']
+    working_dir: /code/eshop
+    volumes:
+      - .:/code
+    environment: *common-environment
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  celery_beat:
+    build: .
+    command: ['celery', '-A', 'eshop', 'beat', '-l', 'info']
+    working_dir: /code/eshop
+    volumes:
+      - .:/code
+    environment: *common-environment
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  celery_flower:
+    build: .
+    command: ['celery', '-A', 'eshop', 'flower', '--port=5555']
+    working_dir: /code/eshop
+    volumes:
+      - .:/code
+    ports:
+      - "5555:5555"
+    environment: *common-environment
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped

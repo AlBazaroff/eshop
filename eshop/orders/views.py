@@ -4,6 +4,7 @@ from django.contrib import messages
 from .models import Order, OrderItem
 from .forms import OrderCreateForm
 from cart.cart import Cart
+from .tasks import order_created
 
 def create_order(request):
     """
@@ -24,6 +25,8 @@ def create_order(request):
                 request,
                 f'Your order successfully created. Order №{order.id}'
             )
+            # send mail
+            order_created.delay(order.id)
             return redirect('shop:product_list')
     else:
         create_form = OrderCreateForm()

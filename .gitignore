@@ -4,3 +4,5 @@ data/
 migrations/
 media/
 .DS_Store
+
+celerybeat-schedule

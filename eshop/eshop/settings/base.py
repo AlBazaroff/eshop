@@ -154,3 +154,8 @@ THUMBNAIL_BASEDIR = 'thumbs'
 
 # RabbitMQ
 RABBITMQ_URL = 'amqp://shopkeeper:shopkeeper@rabbitmq:5672/'
+
+CELERY_BROKER_URL = 'amqp://shopkeeper:shopkeeper@rabbitmq:5672/'
+
+# EMAIL
+DEFAULT_FROM_EMAIL = 'bazaroffalex@gmail.com'
