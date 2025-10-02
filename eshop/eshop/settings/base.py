@@ -151,3 +151,6 @@ CART_SESSION_ID = 'cart'
 # THUMBNAIL
 
 THUMBNAIL_BASEDIR = 'thumbs'
+
+# RabbitMQ
+RABBITMQ_URL = 'amqp://shopkeeper:shopkeeper@rabbitmq:5672/'

@@ -18,6 +18,25 @@ services:
       start_period: 10s
     restart: unless-stopped
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    volumes:
+      - ./data/broker/data:/var/lib/rabbitmq
+      - ./data/broker/logs:/var/log/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=shopkeeper
+      - RABBITMQ_DEFAULT_PASS=shopkeeper
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', 'ping']
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
   web:
     build: .
     command: ["python", "/code/eshop/manage.py", "runserver",
@@ -32,6 +51,9 @@ services:
       - POSTGRES_DB=eshop
       - POSTGRES_USER=shopkeeper
       - POSTGRES_PASSWORD=shopkeeper
+      - RABBITMQ_URL=amqp://shopkeeper:shopkeeper@rabbitmq:5672/
     depends_on:
+      rabbitmq:
+        condition: service_healthy
       postgres:
         condition: service_healthy
