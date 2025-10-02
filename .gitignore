@@ -5,4 +5,16 @@ migrations/
 media/
 .DS_Store
 
-celerybeat-schedule
+celerybeat-schedule*
+celerybeat-schedule.db
+*.celerybeat-schedule
+celerybeat.pid
+
+flower.pid
+flower.log
+
+celery.pid
+celery.log
+
+*.celeryconfig
+celeryconfig.py
