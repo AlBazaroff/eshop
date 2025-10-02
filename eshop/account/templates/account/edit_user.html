@@ -11,7 +11,7 @@
             {% csrf_token %}
             {% with form=edit_user_form  %}
                 <div class="row mb-3">
-                    <label for="email" class="col-sm-2 col-form-label">
+                    <label for="id_email" class="col-sm-2 col-form-label">
                         Email:
                     </label>
                     <div class="col-sm-10">
@@ -19,7 +19,7 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="first_name" class="col-sm-2 col-form-label">
+                    <label for="id_first_name" class="col-sm-2 col-form-label">
                         First name:
                     </label>
                     <div class="col-sm-10">
@@ -27,11 +27,26 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="last_name" class="col-sm-2 col-form-label">
+                    <label for="id_last_name" class="col-sm-2 col-form-label">
                         Last name:
                     </label>
                     <div class="col-sm-10">
                         {{ form.last_name }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_phone" class="col-sm-2 col-form-label">
+                        Phone:
+                    </label>
+                    <div class="col-sm-10">
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.phone.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             {% endwith %}

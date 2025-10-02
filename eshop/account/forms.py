@@ -4,6 +4,21 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, \
 from django.contrib.auth import get_user_model
 from .models import User
 
+class PhoneInput(forms.TextInput):
+    """
+    Field for phone input
+    with validation
+    """
+    def __init__(self, attrs=None):
+        default_attrs = {
+            'class': 'form-control',
+            'pattern': r'^\+?1?\d{9,15}$',
+            'title': "Phone number must be in format: '+999999999'. Up to 15 digits allowed."
+        }
+        if attrs:
+            default_attrs.update(attrs)
+        super().__init__(attrs=default_attrs)
+
 class FormControlMixin:
     """ Mixin for adding bootstrap classes"""
     def __init__(self, placeholder=True, *args, **kwargs):
@@ -65,14 +80,12 @@ class EditUserForm(FormControlMixin, forms.ModelForm):
     """
     Edit user information
     """
-    email = forms.EmailField()
-
-    first_name = forms.CharField(required=False)
-    last_name = forms.CharField(required=False)
-
+    phone = forms.CharField(
+        widget=PhoneInput
+    )
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name']
+        fields = ['email', 'phone', 'first_name', 'last_name']
 
     def __init__(self, *args, **kwargs):
         super().__init__(placeholder=False, *args, **kwargs)

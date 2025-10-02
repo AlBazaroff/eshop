@@ -13,7 +13,7 @@ class LoginView(auth_views.LoginView):
     Login
     """
     form_class = EmailAuthenticationForm
-    template_name = 'account/login.html'
+    template_name = 'account/register/login.html'
 
 @login_required
 def custom_logout(request):
@@ -35,7 +35,7 @@ def register(request):
         form = UserRegistrationForm()
 
     return render(request,
-                  'account/register.html',
+                  'account/register/register.html',
                   {'register_form': form})
 
 @login_required
@@ -78,21 +78,21 @@ def password_change(request):
 class PasswordResetView(auth_views.PasswordResetView):
     """ View for reset password by email """
     form_class = EmailPasswordResetForm
-    template_name = 'account/password_reset.html'
-    email_template_name = 'account/password_reset_email.html'
+    template_name = 'account/register/password_reset.html'
+    email_template_name = 'account/register/password_reset_email.html'
     success_url = '/password-reset/done/'
 
 class PasswordResetDoneView(auth_views.PasswordResetDoneView):
     """ View for reset done  """
-    template_name = 'account/password_reset_done.html'
+    template_name = 'account/register/password_reset_done.html'
 
 class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
     """ Confirmation reset """
     form_class = SetPasswordForm
-    template_name = 'account/password_reset_confirm.html'
+    template_name = 'account/register/password_reset_confirm.html'
     success_url = '/reset/done/'
 
 class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     """ Complete password reset"""
-    template_name = 'account/password_reset_complete.html'
+    template_name = 'account/register/password_reset_complete.html'
 
