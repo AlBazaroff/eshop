@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+# export secret keys for stripe
+from secret_keys import STRIPE_SECRET_KEY
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -42,6 +45,7 @@ INSTALLED_APPS = [
     'cart.apps.CartConfig',
     'orders.apps.OrdersConfig',
     'easy_thumbnails',
+    'payment.apps.PaymentConfig',
 ]
 
 MIDDLEWARE = [
@@ -159,3 +163,13 @@ CELERY_BROKER_URL = 'amqp://shopkeeper:shopkeeper@rabbitmq:5672/'
 
 # EMAIL
 DEFAULT_FROM_EMAIL = 'bazaroffalex@gmail.com'
+
+# STRIPE
+
+# add your secrets key
+# import from secrets.py
+if  not STRIPE_SECRET_KEY:
+    STRIPE_SECRET_KEY = 'your key'
+
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51S4nbnBl25cyInfHodSbbQXbBowT3MzNI8kTI9zOu5avebqLrVQBo5Dw20szH4wktegbdlFMkcim0gQKExrQ57YJ00aCOb6Ef8'
+STIPE_API_VERSION = '2025-09-30.clover'

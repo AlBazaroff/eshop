@@ -4,6 +4,7 @@ data/
 migrations/
 media/
 .DS_Store
+secret_keys.py
 
 celerybeat-schedule*
 celerybeat-schedule.db
@@ -18,3 +19,4 @@ celery.log
 
 *.celeryconfig
 celeryconfig.py
+

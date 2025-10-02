@@ -1,0 +1,68 @@
+from decimal import Decimal
+
+from django.urls import reverse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.conf import settings
+
+
+from orders.models import Order
+
+import stripe
+
+# stripe keys
+stripe.api_key = settings.STRIPE_SECRET_KEY
+stripe.api_version = settings.STRIPE_API_VERSION
+
+def payment_canceled(request):
+    """
+    Canceled payment
+    """
+    return render(request, 'payment/canceled.html')
+
+def payment_completed(request):
+    """
+    Completed payment
+    """
+    return render(request, 'payment/completed.html')
+
+
+def payment_process(request):
+    """
+    Stripe checkout process
+    """
+    order_id = request.session.get('order_id', None)
+    order = get_object_or_404(Order,
+                              id=order_id)
+    if request.method == 'POST':
+        success_url = request.build_absolute_uri(reverse('payment:success'))
+        cancel_url = request.build_absolute_uri(reverse('payment:canceled'))
+        # data for Stripe checkout session
+        data = {
+            'mode': 'payment',
+            'client_reference_id': order.id,
+            'success_url': success_url,
+            'cancel_url': cancel_url,
+            'line-items': [],
+        }
+        # add dynamic items
+        # by data stored in the db
+        for item in order.items.all():
+            data['line-items'].append({
+                'price_data':{
+                    'unit_amount':int(item.price * Decimal('100')),
+                    'currency': 'usd',
+                    'product_data':{
+                        'name': item.product.name,
+                    },
+                },
+                'quantity': item.quantity,
+            }
+
+            )
+        # create Checkout session
+        session = stripe.checkout.Session.create(data)
+        
+        redirect(session.url, code=303)
+    else:
+        return render(request, 'payment/process.html', locals())
