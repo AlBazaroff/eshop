@@ -81,7 +81,8 @@ class EditUserForm(FormControlMixin, forms.ModelForm):
     Edit user information
     """
     phone = forms.CharField(
-        widget=PhoneInput
+        widget=PhoneInput,
+        required=False,
     )
     class Meta:
         model = User

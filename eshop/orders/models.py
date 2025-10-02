@@ -2,11 +2,19 @@ from django.db import models
 from django.core.validators import RegexValidator
 
 from shop.models import Product
+from account.models import User
 
 class Order(models.Model):
     """
     Serve for users orders
     """
+    # if user authenticated create order
+    # we define him
+    user = models.ForeignKey(User,
+                             related_name='orders',
+                             on_delete=models.SET_NULL,
+                             blank=True,
+                             null=True)
     # replace first_name, last_name, email
     # after adding auth
     first_name = models.CharField(max_length=30)
@@ -39,6 +47,7 @@ class Order(models.Model):
     class Meta:
         ordering = ['-created']
         indexes = [
+            models.Index(fields=['email']),
             models.Index(fields=['-created'])
         ]
 

@@ -7,73 +7,74 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="container-fluid">
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
-      role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    {% endfor %}
-  {% endif %}
-</div>
-
-<div class="row">
-  <div class="col-2">
-    <ul class="nav nav-pills flex-column">
-      <li class="nav-item">
-        <a
-          href="{% url 'shop:product_list' %}"
-          class="nav-link{% if not category %} active{% endif %}"
-        >
-          All
-        </a>
-      </li>
-      {% for cat in categories %}
-      <li class="nav-item">
-        <a href="{{ cat.get_absolute_url }}"
-          class="nav-link{% if category.slug == cat.slug %} active{% endif %}">
-          {{ cat.name }}
-        </a>
-      </li>
+  <div class="container-fluid">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
+        role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
       {% endfor %}
-    </ul>
+    {% endif %}
   </div>
 
-  <div class="col" id="product-list">
-    <div class="dropdown text-end">
-      <button class="btn btn-primary dropdown-toggle" type="button"
-      id="drowdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="False">
-        Default
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-        <li><a href="#" class="dropdown-item">Default</a></li>
-        <li><a href="#" class="dropdown-item">Price ascending</a></li>
-        <li><a href="#" class="dropdown-item">Price descending</a></li>
+  <div class="row">
+    <div class="col-2">
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <a
+            href="{% url 'shop:product_list' %}"
+            class="nav-link{% if not category %} active{% endif %}"
+          >
+            All
+          </a>
+        </li>
+        {% for cat in categories %}
+        <li class="nav-item">
+          <a href="{{ cat.get_absolute_url }}"
+            class="nav-link{% if category.slug == cat.slug %} active{% endif %}">
+            {{ cat.name }}
+          </a>
+        </li>
+        {% endfor %}
       </ul>
     </div>
-    <table class="table-light w-100">
-        <tbody>
-            {% for product in products %}
-                <tr>
-                    <td class="text-center">
-                        <a href="{{ product.get_absolute_url }}">
-                            {% thumbnail product.image '150x150' as im %}
-                            <img src="{% if product.image %}{{ im.url }}{% else %}{% static 'img/no_image_available.jpg' %}{% endif %}">
-                        </a>
-                    </td>
-                    <td class="align-top pt-5">
-                        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-                    </td>
-                    <td class="align-top pt-5">
-                        ${{ product.price }}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+    <div class="col" id="product-list">
+      <div class="dropdown text-end">
+        <button class="btn btn-primary dropdown-toggle" type="button"
+        id="drowdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="False">
+          Default
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          <li><a href="#" class="dropdown-item">Default</a></li>
+          <li><a href="#" class="dropdown-item">Price ascending</a></li>
+          <li><a href="#" class="dropdown-item">Price descending</a></li>
+        </ul>
+      </div>
+      <table class="table-light w-100">
+          <tbody>
+              {% for product in products %}
+                  <tr>
+                      <td class="text-center">
+                          <a href="{{ product.get_absolute_url }}">
+                              {% thumbnail product.image '150x150' as im %}
+                              <img src="{% if product.image %}{{ im.url }}{% else %}{% static 'img/no_image_available.jpg' %}{% endif %}">
+                          </a>
+                      </td>
+                      <td class="align-top pt-5">
+                          <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                      </td>
+                      <td class="align-top pt-5">
+                          ${{ product.price }}
+                      </td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+    </div>
   </div>
 </div>
 {% endblock %}

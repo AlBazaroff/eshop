@@ -11,10 +11,15 @@ def create_order(request):
     Create order by cart
     """
     cart = Cart(request)
+    user = request.user
     if request.method == 'POST':
-        create_form = OrderCreateForm(request.POST)
+        create_form = OrderCreateForm(user, request.POST)
         if create_form.is_valid():
-            order = create_form.save()
+            order = create_form.save(commit=False)
+            if request.user.is_authenticated:
+                order.user = user
+            order.save()
+            
             for item in cart:
                 OrderItem.objects.create(order=order,
                                          product=item['product'],
@@ -29,7 +34,7 @@ def create_order(request):
             order_created.delay(order.id)
             return redirect('shop:product_list')
     else:
-        create_form = OrderCreateForm()
+        create_form = OrderCreateForm(user)
     return render(request,
                   'orders/create_order.html',
                   {'cart': cart,
