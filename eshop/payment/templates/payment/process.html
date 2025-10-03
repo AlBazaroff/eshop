@@ -21,7 +21,7 @@
         <tbody class="border-bottom">
             {% for item in order.items.all %}
                 <tr class="text-center align-middle">
-                    <td>
+                    <td class="py-3">
                         {% if item.product.image %}
                             {% thumbnail item.product.image '150x150' as im %}
                             <img src="{{ im.url }}">

@@ -14,7 +14,7 @@ def order_created(order_id):
     order = Order.objects.get(id=order_id)
     subject = f'Order no. {order.id}'
     message = f'Your order has been successfully created. ' \
-              f'Order id is {order.id}. Thanks'
+              f'Order id is {order.id}. Thank you for your order.'
     mail = send_mail(subject,
                      message,
                      None,
