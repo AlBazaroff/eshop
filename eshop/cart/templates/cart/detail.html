@@ -14,9 +14,9 @@
                 {% for item in cart %}
                     {% with product=item.product %}
                     <tr>
-                        <td class="text-center">
+                        <td class="text-center py-3">
                             {% if product.image %}
-                                {% thumbnail product.image 200x200 as im %}
+                                {% thumbnail product.image 150x150 as im %}
                                 <img src="{{ im.url }}">
                             {% else %}
                                 <img
@@ -31,7 +31,7 @@
                                     {{ product.name|truncatewords:5 }}
                                 </a>
                             </h5>
-                            <p>{{ product.description|truncatewords:20|linebreaks }}</p>
+                            <p>{{ product.description|truncatewords:10|linebreaks }}</p>
                         </td>
                         <td class="text-center">
                             <form action="{% url 'cart:add_cart' product.id %}"

@@ -1,7 +1,15 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from .models import Order, OrderItem
-# Register your models here.
+
+def stripe_payment(obj):
+    url = obj.get_stripe_url()
+    if obj.stripe_id:
+        html = f'<a href="{url}" target="_blank">{obj.stripe_id}</a>'
+        return mark_safe(html)
+    return ''
+stripe_payment.short_description = 'Stripe payment'
 
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
@@ -11,6 +19,6 @@ class OrderItemInline(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name', 'email',
                     'city', 'address', 'postal_code',
-                     'paid', 'created', 'updated' ]
+                    stripe_payment, 'paid', 'created', 'updated' ]
     list_filter = ['paid', 'created', 'updated']
     inlines = [OrderItemInline]

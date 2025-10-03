@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
+from django.conf import settings
 
 from shop.models import Product
 from account.models import User
@@ -40,6 +41,7 @@ class Order(models.Model):
     postal_code = models.CharField(max_length=10)
 
     paid = models.BooleanField(default=False)
+    stripe_id = models.CharField(max_length=250, blank=True)
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -58,6 +60,16 @@ class Order(models.Model):
         " return total cost of order "
         return sum(item.get_cost()
                    for item in self.items.all())
+    
+    def get_stripe_url(self):
+        " return url to payment "
+        if not self.stripe_id:
+            return ''
+        if '_test_' in settings.STRIPE_SECRET_KEY:
+            path = '/test/'
+        else:
+            path = '/'
+        return f'https://dashboard.stripe.com{path}payments/{self.stripe_id}'
 
 class OrderItem(models.Model):
     """
@@ -74,7 +86,7 @@ class OrderItem(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     
     def __str__(self):
-        return (self.id)
+        return str(self.id)
     
     def get_cost(self):
         " return cost of items in the position "
