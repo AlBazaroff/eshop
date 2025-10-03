@@ -28,7 +28,7 @@
                             <h5>
                                 <a class='text-decoration-none'
                                 href="{{ product.get_absolute_url }}">
-                                    {{ product.name }}
+                                    {{ product.name|truncatewords:5 }}
                                 </a>
                             </h5>
                             <p>{{ product.description|truncatewords:20|linebreaks }}</p>
@@ -76,10 +76,15 @@
                 Total cost: 
                 <span class="fw-bold">${{ cart.total_price }}</span>
             </p>
-            <a href="{% url 'cart:clear_cart' %}" class="btn btn-danger">
-                Clear
-            </a>
-            <a href="{% url 'orders:create_order' %}" class="btn btn-primary">Checkout</a>
+            <div class="btn-group">
+                <form method="post" action="{% url 'cart:clear_cart' %}">
+                    {% csrf_token %}
+                    <button class="btn btn-danger rounded me-3">
+                        Clear
+                    </button>
+                </form>
+                <a href="{% url 'orders:create_order' %}" class="btn btn-primary rounded">Checkout</a>
+            </div>
         </div>
     {% else %}
         <h2 class="text-center mt-5"  style="min-height: 200px;">

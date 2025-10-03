@@ -1,18 +1,18 @@
-{% extends 'account/base.html' %}
+{% extends 'shop/base.html' %}
 
 {% block title %}
-    Reset your password
+    Payment completed
 {% endblock %}
 
 {% block content %}
-<!-- After adding email messages, create form -->
 <div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
     <div class='position-relative bg-white p-4 rounded shadow-sm d-flex flex-column'>
         <a class="btn position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-        href="{% url 'shop:product_list' %}"><i class="bi bi-x-circle"></i></a>
-        <p>Your password has been successfully changed.<br>
-        You can login: <a href="{% url 'account:login' %}">here</a>.</p>
-
+        href="{% url 'shop:product_list' %}">
+            <i class="bi bi-x-circle"></i>
+        </a>
+        <h1>Your payment was completed</h1>
+        <p>Thank you for payment! Wait your order.</p>
     </div>
 </div>
 {% endblock %}

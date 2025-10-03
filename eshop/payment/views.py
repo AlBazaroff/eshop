@@ -18,12 +18,18 @@ def payment_canceled(request):
     """
     Canceled payment
     """
+    del request.session['order_id']
     return render(request, 'payment/canceled.html')
 
 def payment_completed(request):
     """
     Completed payment
     """
+    order_id = request.session['order_id']
+    order = Order.objects.get(id=order_id)
+    order.paid = True
+    order.save()
+    del request.session['order_id']
     return render(request, 'payment/completed.html')
 
 
@@ -35,7 +41,7 @@ def payment_process(request):
     order = get_object_or_404(Order,
                               id=order_id)
     if request.method == 'POST':
-        success_url = request.build_absolute_uri(reverse('payment:success'))
+        success_url = request.build_absolute_uri(reverse('payment:completed'))
         cancel_url = request.build_absolute_uri(reverse('payment:canceled'))
         # data for Stripe checkout session
         data = {
@@ -43,12 +49,12 @@ def payment_process(request):
             'client_reference_id': order.id,
             'success_url': success_url,
             'cancel_url': cancel_url,
-            'line-items': [],
+            'line_items': [],
         }
         # add dynamic items
         # by data stored in the db
         for item in order.items.all():
-            data['line-items'].append({
+            data['line_items'].append({
                 'price_data':{
                     'unit_amount':int(item.price * Decimal('100')),
                     'currency': 'usd',
@@ -61,8 +67,8 @@ def payment_process(request):
 
             )
         # create Checkout session
-        session = stripe.checkout.Session.create(data)
+        session = stripe.checkout.Session.create(**data)
         
-        redirect(session.url, code=303)
+        return redirect(session.url, code=303)
     else:
         return render(request, 'payment/process.html', locals())

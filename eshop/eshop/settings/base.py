@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 
 # export secret keys for stripe
-from secret_keys import STRIPE_SECRET_KEY
+from .secret_keys import STRIPE_SECRET_KEY
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -172,4 +172,4 @@ if  not STRIPE_SECRET_KEY:
     STRIPE_SECRET_KEY = 'your key'
 
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51S4nbnBl25cyInfHodSbbQXbBowT3MzNI8kTI9zOu5avebqLrVQBo5Dw20szH4wktegbdlFMkcim0gQKExrQ57YJ00aCOb6Ef8'
-STIPE_API_VERSION = '2025-09-30.clover'
+STRIPE_API_VERSION = '2025-09-30.clover'

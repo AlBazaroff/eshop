@@ -1,4 +1,6 @@
 {% extends 'shop/base.html' %}
+{% load thumbnail %}
+{% load static %}
 
 {% block title %}
     Create order
@@ -29,7 +31,7 @@
                                         {{ item.product.name|truncatewords:2 }}
                                     </td>
                                     <td class="text-center">
-                                        {{ item.quantity}}
+                                        {{ item.quantity }}
                                     </td>
                                     <td class="text-end fw-bold">
                                         ${{ item.total_price }}
