@@ -25,7 +25,6 @@ class Order(models.Model):
     # instead, can use django-phonenumber-field
     phone = models.CharField(
         max_length=17,
-        blank=True,
         validators=[
             RegexValidator(
             regex=r'^\+?1?\d{9,15}$',
@@ -33,12 +32,23 @@ class Order(models.Model):
                 Up to 15 digits allowed."
             )
         ],
-        verbose_name='Phone Number'
+        verbose_name='Phone number'
     )
 
     city = models.CharField(max_length=30)
     address = models.CharField(max_length=150)
-    postal_code = models.CharField(max_length=10)
+    postal_code = models.CharField(
+        max_length=10,
+        blank=True,
+        null=True,
+        validators=[
+            RegexValidator(
+                regex=r'',
+                message="Your index isn't valid. Input correct index"
+                )
+            ],
+             verbose_name='Postal code'
+    )
 
     paid = models.BooleanField(default=False)
     stripe_id = models.CharField(max_length=250, blank=True)

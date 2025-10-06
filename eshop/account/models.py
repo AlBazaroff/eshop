@@ -37,6 +37,24 @@ class User(AbstractUser):
     username = models.CharField(max_length=150,
                                 blank=True,
                                 null=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = UserManager()
+    class Meta:
+        db_table = 'auth_user'
+
+    def __str__(self):
+        return self.email
+    
+class Profile(models.Model):
+    """
+    Profiles for user
+    """
+    user = models.ForeignKey(User,
+                             related_name='profile',
+                             on_delete=models.CASCADE)
     phone = models.CharField(max_length=20,
                              blank=True,
                              null=True,
@@ -48,13 +66,19 @@ class User(AbstractUser):
                                  )
                              ],
                              verbose_name='Phone number')
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
-
-    objects = UserManager()
-    class Meta:
-        db_table = 'auth_user'
-
-    def __str__(self):
-        return self.email
+    city = models.CharField(max_length=30,
+                            blank=True,
+                            null=True)
+    address = models.CharField(max_length=150, blank=True, null= True)
+    postal_code = models.CharField(
+        max_length=10,
+        blank=True,
+        null=True,
+        validators=[
+            RegexValidator(
+                regex=r'',
+                message="Your index isn't valid. Input correct index"
+                )
+            ],
+             verbose_name='Postal code'
+    )

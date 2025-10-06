@@ -6,14 +6,6 @@ class OrderCreateForm(forms.ModelForm):
     """
     Form for creation orders
     """
-    postal_code = forms.CharField(
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'pattern': r'^[A-Z0-9\- ]{4,10}$',
-            'title': "Your index isn't valid. Input correct index"
-            }
-        )
-    )
     class Meta:
         model = Order
         fields = ['first_name', 'last_name', 'email', 'phone',

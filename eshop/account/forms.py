@@ -80,13 +80,13 @@ class EditUserForm(FormControlMixin, forms.ModelForm):
     """
     Edit user information
     """
-    phone = forms.CharField(
-        widget=PhoneInput,
-        required=False,
-    )
+    # phone = forms.CharField(
+    #     widget=PhoneInput,
+    #     required=False,
+    # )
     class Meta:
         model = User
-        fields = ['email', 'phone', 'first_name', 'last_name']
+        fields = ['email', 'first_name', 'last_name']
 
     def __init__(self, *args, **kwargs):
         super().__init__(placeholder=False, *args, **kwargs)
