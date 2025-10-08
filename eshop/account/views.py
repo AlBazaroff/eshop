@@ -6,7 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from .forms import EmailAuthenticationForm, UserRegistrationForm, \
-    EmailPasswordResetForm, EditUserForm, EmailPasswordChangeForm
+    EmailPasswordResetForm, EditUserForm, EmailPasswordChangeForm, \
+    EditProfileForm
+from .models import Profile
 
 class LoginView(auth_views.LoginView):
     """
@@ -29,6 +31,7 @@ def register(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            Profile.objects.create(user=user)
             login(request, user)
             return redirect('shop:product_list')
     else:
@@ -45,16 +48,20 @@ def edit_user(request):
     edit email, first_name, last_name
     """
     if request.method == 'POST':
-        form = EditUserForm(data=request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
+        user_form = EditUserForm(data=request.POST, instance=request.user)
+        profile_form = EditProfileForm(data=request.POST, instance=request.user.profile)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
             messages.success(request, 'Your profile was successfully updated!')
             return redirect('shop:product_list')
     else:
-        form = EditUserForm(instance=request.user)
+        user_form = EditUserForm(instance=request.user)
+        profile_form = EditProfileForm(instance=request.user.profile)
     return render(request,
                   'account/edit_user.html',
-                  {'edit_user_form': form})
+                  {'edit_user_form': user_form,
+                   'edit_profile_form': profile_form})
 
 @login_required
 def password_change(request):

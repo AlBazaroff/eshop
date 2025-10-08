@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, \
                                       PasswordResetForm, PasswordChangeForm
 from django.contrib.auth import get_user_model
-from .models import User
+from .models import User, Profile
 
 class PhoneInput(forms.TextInput):
     """
@@ -19,13 +19,27 @@ class PhoneInput(forms.TextInput):
             default_attrs.update(attrs)
         super().__init__(attrs=default_attrs)
 
+class PostalCodeInput(forms.TextInput):
+    """
+    Field for postal code input
+    with validation
+    """
+    def __init__(self, attrs=None):
+        default_attrs = {
+            'pattern': r'^[0-9A-Za-z\s\-]{4,10}$',
+            'title': 'You need to write exist postal code',
+        }
+        if attrs:
+            default_attrs.update(attrs)
+        super().__init__(attrs=default_attrs)
+
 class FormControlMixin:
     """ Mixin for adding bootstrap classes"""
-    def __init__(self, placeholder=True, *args, **kwargs):
+    def __init__(self, *args, ph: bool = True, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
-            if placeholder:
+            if ph:
                 field.widget.attrs['placeholder'] = f'Enter your {field.label.lower()}'
 
 class EmailAuthenticationForm(FormControlMixin, AuthenticationForm):
@@ -46,6 +60,16 @@ class UserRegistrationForm(FormControlMixin, UserCreationForm):
             'placeholder': 'Enter your email',
         })
     )
+    first_name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Enter your first name',
+        })
+    )
+    last_name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Enter your second name',
+        })
+    )
     password1 = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'placeholder': 'Enter password',
@@ -62,7 +86,7 @@ class UserRegistrationForm(FormControlMixin, UserCreationForm):
         fields = ['email', 'first_name', 'last_name']
 
     def __init__(self, *args, **kwargs):
-        super().__init__(placeholder=False, *args, **kwargs)
+        super().__init__(ph=False, *args, **kwargs)
 
 class EmailPasswordResetForm(PasswordResetForm):
     """ 
@@ -80,20 +104,35 @@ class EditUserForm(FormControlMixin, forms.ModelForm):
     """
     Edit user information
     """
-    # phone = forms.CharField(
-    #     widget=PhoneInput,
-    #     required=False,
-    # )
+    
     class Meta:
         model = User
         fields = ['email', 'first_name', 'last_name']
 
     def __init__(self, *args, **kwargs):
-        super().__init__(placeholder=False, *args, **kwargs)
+        super().__init__(ph=False, *args, **kwargs)
+
+class EditProfileForm(FormControlMixin, forms.ModelForm):
+    """
+    Edit users profile
+    """
+    phone = forms.CharField(
+        widget=PhoneInput,
+        label='Phone',
+        required=False,
+    )
+    postal_code = forms.CharField(
+        widget=PostalCodeInput,
+        label='Postal code',
+        required=False,
+    )
+    class Meta:
+        model = Profile
+        fields = ['phone', 'city', 'address', 'postal_code']
 
 class EmailPasswordChangeForm(FormControlMixin, PasswordChangeForm):
     """
-    Change password by email
+    Change password by email with Mixin
+    to set up
     """
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    pass

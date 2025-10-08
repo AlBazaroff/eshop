@@ -52,9 +52,8 @@ class Profile(models.Model):
     """
     Profiles for user
     """
-    user = models.ForeignKey(User,
-                             related_name='profile',
-                             on_delete=models.CASCADE)
+    user = models.OneToOneField(User,
+                                on_delete=models.CASCADE)
     phone = models.CharField(max_length=20,
                              blank=True,
                              null=True,
@@ -70,15 +69,21 @@ class Profile(models.Model):
                             blank=True,
                             null=True)
     address = models.CharField(max_length=150, blank=True, null= True)
-    postal_code = models.CharField(
-        max_length=10,
-        blank=True,
-        null=True,
-        validators=[
-            RegexValidator(
-                regex=r'',
-                message="Your index isn't valid. Input correct index"
-                )
-            ],
-             verbose_name='Postal code'
-    )
+    postal_code = models.CharField(max_length=10,
+                                   blank=True,
+                                   null=True,
+                                   validators=[
+                                       RegexValidator(
+                                           regex=r'^[0-9A-Za-z\s\-]{4,10}$',
+                                           message="Your index isn't valid. Input correct index"
+                                           )
+                                   ],
+                                   verbose_name='Postal code')
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['city'])
+        ]
+    
+    def __str__(self):
+        return f'Profile of user: {self.user}'
