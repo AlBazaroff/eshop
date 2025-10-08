@@ -43,7 +43,7 @@ class Order(models.Model):
         null=True,
         validators=[
             RegexValidator(
-                regex=r'',
+                regex=r'^[0-9A-Za-z\s\-]{4,10}$',
                 message="Your index isn't valid. Input correct index"
                 )
             ],
