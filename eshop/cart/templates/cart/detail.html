@@ -8,8 +8,8 @@
 
 {% block content %}
     {% if cart %}
-    <div class="conainer-fluid mt-4 fw-bold text-start fs-6"></div>
-        <table class="container-fluid mt-4 border-bottom border-primary border-3">
+    <div class="conainer mt-5 fw-bold text-start fs-6"></div>
+        <table class="container border-bottom border-primary border-3">
             <tbody>
                 {% for item in cart %}
                     {% with product=item.product %}
@@ -67,7 +67,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <div class="container-fluid text-end mt-4">
+        <div class="container text-end mt-4">
             <p>
                 In your cart {{ cart|length }}
                 item{{ cart|length|pluralize:'s' }}
@@ -87,7 +87,7 @@
             </div>
         </div>
     {% else %}
-        <h2 class="text-center mt-5"  style="min-height: 200px;">
+        <h2 class="text-center mt-5">
             Your cart is empty...
         </h2>
     {% endif %}

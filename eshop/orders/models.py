@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from django.conf import settings
+from django.urls import reverse
 
 from shop.models import Product
 from account.models import User
@@ -80,6 +81,10 @@ class Order(models.Model):
         else:
             path = '/'
         return f'https://dashboard.stripe.com{path}payments/{self.stripe_id}'
+
+    def get_absolute_url(self):
+        return reverse('account:order_detail',
+                       args=[self.pk])
 
 class OrderItem(models.Model):
     """

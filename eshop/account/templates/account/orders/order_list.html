@@ -1,0 +1,60 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+    Your orders
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="m-5">Your orders:</h1>
+        <div class="container-fluid mt-5">
+            <table class="w-100 table table-hover table-sm">
+                <thead class="text-center">
+                    <tr class="border-bottom-1 bg-light">
+                        <th>№</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>City</th>
+                        <th>Postal code</th>
+                        <th>Paid</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider text-center align-middle">
+                    {% for order in orders %}
+                        <tr>
+                            <td>
+                                {{ order.id }}
+                            </td>
+                            <td>
+                                {{ order.first_name }}
+                                {{ order.last_name }}
+                            </td>
+                            <td>
+                                {{ order.email }}
+                            </td>
+                            <td>
+                                {{ order.phone }}
+                            </td>
+                            <td>
+                                {{ order.city }}
+                            </td>
+                            <td>
+                                {{ order.postal_code }}
+                            </td>
+                            <td>
+                                <input class="form-check-input bg-success"
+                                type="checkbox" id="paid"
+                                {% if order.paid %}checked{% endif %} disabled>
+                            </td>
+                            <td>
+                                <a class="btn btn-primary" href="{{ order.get_absolute_url }}">View</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
