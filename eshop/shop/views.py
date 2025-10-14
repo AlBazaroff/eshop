@@ -13,15 +13,19 @@ def product_list(request, category_slug=None):
     category = None
     categories = Category.objects.all()
     products = Product.objects.filter(available=True)
-    
-    # define category
+
     if category_slug:
+        # get products from selected category
         category = get_object_or_404(Category,
                                      slug=category_slug)
         products = products.filter(category=category)
+
+    # pagination pages
     paginator = Paginator(products, 7)
     page_number = request.GET.get('page')
+    # get products from page
     products = paginator.get_page(page_number)
+    
     return render(request,
                   'shop/product/product_list.html',
                   {'category': category,

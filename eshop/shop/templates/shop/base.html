@@ -55,8 +55,6 @@
                   </li>
                 </ul>
               </div>
-              <!-- <a href="{% url 'account:logout' %}" class="btn btn-outline-primary">Logout</a>
-              <a href="{% url 'account:edit_user' %}" class="btn btn-outline-primary"><i class="bi bi-person-circle"></i></a> -->
             {% endif %}
           </div>
           {% with cart_items=cart|length %}
@@ -74,9 +72,7 @@
     </header>
 
     <main class="flex-grow-1" id="content">
-
         {% block content %} {% endblock %}
-
     </main>
 
     <footer class="bg-light mt-auto" id="footer">

@@ -1,5 +1,4 @@
 {% extends 'shop/base.html' %}
-{% load static %}
 {% load thumbnail %}
 
 {% block title %}
@@ -12,7 +11,7 @@
         <div class="row pt-4">
             <div class="col-3 text-center" id="image">
                 {% thumbnail product.image 250x250 as im %}
-                <img src="{% if product.image %}{{ im.url }}{% else %}{% static 'img/no_image_available.jpg' %}{% endif %}">
+                <img src="{{ im.url }}">
             </div>
             <div class="col">
                 <div class="container-fluid">

@@ -1,8 +1,10 @@
 from django.db import models
 from django.urls import reverse
 
-# Create your models here.
 class Category(models.Model):
+    """
+    Product's categories
+    """
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200)
 
@@ -18,6 +20,10 @@ class Category(models.Model):
                        args=[self.slug])
 
 class Product(models.Model):
+    """
+    Product selling in the shop
+    if available = False, not selling
+    """
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200)
     description = models.TextField(blank=True)
@@ -30,7 +36,6 @@ class Product(models.Model):
                                 decimal_places=2)
     available = models.BooleanField(default=True)
     
-    
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -38,9 +43,8 @@ class Product(models.Model):
         ordering = ['name']
         indexes = [
             models.Index(fields=['id', 'slug']),
-            models.Index(fields=['name']),
+            # models.Index(fields=['name']), for search and sorting
             models.Index(fields=['-created']),
-            # add index for price, for sorting in the future
         ]
     
     def __str__(self):
