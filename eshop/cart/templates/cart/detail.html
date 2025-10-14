@@ -1,0 +1,88 @@
+{% extends 'shop/base.html' %}
+{% load thumbnail %}
+
+{% block title %}
+    Cart
+{% endblock %}
+
+{% block content %}
+    {% if cart %}
+    <div class="conainer mt-5 fw-bold text-start fs-6"></div>
+        <table class="container border-bottom border-primary border-3">
+            <tbody>
+                {% for item in cart %}
+                    {% with product=item.product %}
+                    <tr>
+                        <td class="text-center py-3">
+                            {% thumbnail product.image 150x150 as im %}
+                            <img src="{{ im.url }}">
+                        </td>
+                        <td>
+                            <h5>
+                                <a class='text-decoration-none'
+                                href="{{ product.get_absolute_url }}">
+                                    {{ product.name|truncatewords:5 }}
+                                </a>
+                            </h5>
+                            <p>{{ product.description|truncatewords:10|linebreaks }} </p>
+                        </td>
+                        <td class="text-center">
+                            <form action="{% url 'cart:add_cart' product.id %}"
+                            method="POST">
+                                {% csrf_token %}
+                                {{ item.update_quantity_form.quantity }}
+                                {{ item.update_quantity_form.override }}
+                                <input type="submit" class="btn btn-secondary"
+                                value="Update">
+                            </form>
+                        </td>
+                        <td class="text-start">
+                            <form
+                            action="{% url 'cart:remove_cart' product.id %}"
+                            method="post">
+                                {% csrf_token %}
+                                <input class="btn btn-danger" type="submit"
+                                value="Remove">
+                            </form>
+                            
+                        </td>
+                        <td>
+                            ${{ item.price }} 
+                            <span style="font-size:x-small">
+                                per unit
+                            </span>
+                        </td>
+                        <td class="text-center text-bold fw-bold fs-5">
+                            ${{ item.total_price }}
+                        </td>
+                    </tr>
+                    {% endwith %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="container text-end mt-4">
+            <p>
+                In your cart {{ cart|length }}
+                item{{ cart|length|pluralize:'s' }}
+            </p>
+            <p class="fs-4">
+                Total cost: 
+                <span class="fw-bold">${{ cart.total_price }}</span>
+            </p>
+            <div class="btn-group">
+                <form method="post" action="{% url 'cart:clear_cart' %}">
+                    {% csrf_token %}
+                    <button class="btn btn-danger rounded me-3">
+                        Clear
+                    </button>
+                </form>
+                <a href="{% url 'orders:create_order' %}"
+                class="btn btn-primary rounded">Checkout</a>
+            </div>
+        </div>
+    {% else %}
+        <h2 class="text-center mt-5">
+            Your cart is empty...
+        </h2>
+    {% endif %}
+{% endblock %}

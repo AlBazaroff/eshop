@@ -1,0 +1,40 @@
+{% extends 'shop/base.html' %}
+{% load thumbnail %}
+
+{% block title %}
+    {{ product.name }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="pt-4">{{ product.name }}</h2>
+        <div class="row pt-4">
+            <div class="col-3 text-center" id="image">
+                {% thumbnail product.image 250x250 as im %}
+                <img src="{{ im.url }}">
+            </div>
+            <div class="col">
+                <div class="container-fluid">
+                    <p class="fs-6" id="description">
+                        {{ product.description|linebreaks }}
+                    </p>
+                </div>
+                <div class="container-fluid pt-4">
+                    <p class="text-end fw-bold fs-4" id="price">
+                        ${{ product.price }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container h-10-10 pb-4">
+        <form action="{% url 'cart:add_cart' product.id %}" method="post">
+            <!-- Add functions for form, when add cart -->
+             <div class="text-end">
+                {% csrf_token %}
+                {{ cart_form }}
+                <input type="submit" class="btn btn-primary mt-3" value="Add to cart">
+            </div>
+        </form>
+    </div>
+{% endblock %}

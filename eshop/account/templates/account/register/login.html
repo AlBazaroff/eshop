@@ -1,0 +1,26 @@
+{% extends 'account/base.html' %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+    <form class='position-relative bg-white p-4 rounded shadow-sm d-flex flex-column w-25' method="post">
+        <a class="btn position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+        href="{% url 'shop:product_list' %}">
+            <i class="bi bi-x-circle"></i>
+        </a>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-success">Login</button>
+        <a href="{% url 'account:register' %}" class="btn btn-primary mt-1">Sign up</a>
+        <div class="text-center">
+            <a href="{% url 'account:password_reset' %}">
+                Forgot your password?
+            </a>
+        </div>
+    </form>
+    
+</div>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+    Edit your profile
+{% endblock %}
+
+{% block content %}
+    <div class="bg-white">
+        <h1 class="m-5 fw-bold">Edit your personal information</h1>
+        <form class="w-50 m-5" method="POST">
+            {% csrf_token %}
+            {% with user_form=edit_user_form profile_form=edit_profile_form  %}
+                <div class="row mb-3">
+                    <label for="id_email" class="col-sm-2 col-form-label">
+                        Email:
+                    </label>
+                    <div class="col-sm-10">
+                        {{ user_form.email }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_first_name" class="col-sm-2 col-form-label">
+                        First name:
+                    </label>
+                    <div class="col-sm-10">
+                        {{ user_form.first_name }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_last_name" class="col-sm-2 col-form-label">
+                        Last name:
+                    </label>
+                    <div class="col-sm-10">
+                        {{ user_form.last_name }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_phone" class="col-sm-2 col-form-label">
+                        Phone:
+                    </label>
+                    <div class="col-sm-10">
+                        {{ profile_form.phone }}
+                        <!-- {% if profile_form.phone.errors %}
+                            <div class="text-danger small">
+                                {% for error in profile_form.phone.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %} -->
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_city" class="col-sm-2 col-form-label">
+                        City:
+                    </label>
+                    <div class="col-sm-10">
+                        {{ profile_form.city }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_address" class="col-sm-2 col-form-label">
+                        Address:
+                    </label>
+                    <div class="col-sm-10">
+                        {{ profile_form.address }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_postal_code" class="col-sm-2 col-form-label">
+                        Postal code:
+                    </label>
+                    <div class="col-sm-10">
+                        {{ profile_form.postal_code }}
+                    </div>
+                </div>
+            {% endwith %}
+            <div class="row">
+                <div class="col-6 pt-5">
+                    <a href="{% url 'account:password_change' %}" class="btn btn-primary">Change password</a>
+                </div>
+                <div class="col text-end pt-5">
+                    <a href="{% url 'account:edit_user' %}" class="btn btn-danger">
+                        Reset
+                    </a>
+                    <button class="btn btn-success">Save</button>
+                </div>
+        </form>
+    </div>
+{% endblock %}

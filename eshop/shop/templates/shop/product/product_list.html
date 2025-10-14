@@ -1,0 +1,71 @@
+{% extends 'shop/base.html' %}
+{% load thumbnail %}
+
+{% block title %}
+    {% if category %}{{ category.name }}{% else %}Products{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <div class="container-fluid">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
+        role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <div class="row">
+    <div class="col-2">
+      <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+          <a
+            href="{% url 'shop:product_list' %}"
+            class="nav-link{% if not category %} active{% endif %}">
+            All
+          </a>
+        </li>
+        {% for cat in categories %}
+        <li class="nav-item">
+          <a href="{{ cat.get_absolute_url }}"
+          class="nav-link{% if category.slug == cat.slug %} active{% endif %}">
+            {{ cat.name }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="col" id="product-list">
+      <table class="table-light w-100">
+          <tbody>
+              {% for product in products %}
+                  <tr class="border-bottom">
+                      <td class="text-center">
+                          <a href="{{ product.get_absolute_url }}">
+                              {% thumbnail product.image '150x150' as im %}
+                              <img src="{{ im.url }}">
+                          </a>
+                      </td>
+                      <td class="align-top pt-5 ps-5">
+                          <a href="{{ product.get_absolute_url }}">
+                            {{ product.name }}
+                          </a>
+                      </td>
+                      <td class="align-top pt-5 text-center"
+                      style="min-width: 130px;">
+                          ${{ product.price }}
+                      </td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+      {% include 'shop/product/pagination.html' with page=products %}
+    </div>
+  </div>
+</div>
+{% endblock %}

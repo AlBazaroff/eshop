@@ -1,0 +1,68 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+    Order №{{ order.id }}
+{% endblock %}
+
+{% block content %}
+    <div class="row container-fluid p-5 position-relative">
+        <a href="{% url 'account:order_list' %}"
+        class="btn btn-primary rounded-pill text-start position-absolute"
+        style="max-width:40px">
+            <i class="bi bi-arrow-left"></i>
+        </a>
+        <h1 class="text-center mb-5 border-bottom">Order №{{ order.id }}</h1>
+        
+        <div class="col ps-5">
+            <h3 class="text-center mb-4">Items</h3>
+            <table class="w-100 fs-5">
+                <thead class="text-center">
+                    <th>Name</th>
+                    <th>Price <small>per unit</small></th>
+                    <th>Quantity</th>
+                    <th>Total price</th>
+                </thead>
+                <tbody class="table-group-divider">
+                    {% for item in items %}
+                    <tr class="py-5">
+                        <td>
+                            {{ item.product.name|truncatewords:5 }}
+                        </td>
+                        <td class="text-center">
+                            ${{ item.price }}
+                        </td>
+                        <td class="text-center">
+                            {{ item.quantity }}
+                        </td>
+                        <td class="text-center">
+                            ${{ item.get_cost }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-2 bg-light text-center">
+            <h3 class="text-center mt-4 mb-4">Order information</h3>
+                <p>{{ order.first_name }} {{ order.last_name }}</p>
+                <p>{{ order.email }}</p>
+                <p>{{ order.phone }}</p>
+                <p>{{ order.city }}</p>
+                <p>{{ order.address }}</p>
+                <p>{{ order.postal_code }}</p>
+                <p>
+                    {% if order.paid %}
+                        Paid
+                    {% else %}
+                        Unpaid
+                    {% endif %}
+                </p>
+                <p>
+                    {{ order.created }}
+                </p>
+            <p class="fs-4 fw-bold text-center">${{ total_cost }}</p>
+        </div>
+        
+    </div>
+{% endblock %}

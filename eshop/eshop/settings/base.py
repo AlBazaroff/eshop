@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 
+# export secret keys for stripe
+from .secret_keys import STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -31,12 +34,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'account.apps.AccountConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'shop.apps.ShopConfig',
+    'cart.apps.CartConfig',
+    'orders.apps.OrdersConfig',
+    'easy_thumbnails',
+    'payment.apps.PaymentConfig',
 ]
 
 MIDDLEWARE = [
@@ -61,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.cart',
             ],
         },
     },
@@ -99,6 +109,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# AUTHENTICATE SETTINGS
+AUTH_USER_MODEL = 'account.User'
+AUTHENTICATION_BACKENDS = [
+    'account.backends.EmailBackend',
+]
+
+LOGIN_REDIRECT_URL = 'shop:product_list'
+LOGIN_URL = 'account:login'
+LOGOUT_URL = 'account/logout'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -121,3 +140,33 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# SESSION FOR CART
+
+CART_SESSION_ID = 'cart'
+
+# THUMBNAIL
+
+THUMBNAIL_BASEDIR = 'thumbs'
+
+# RabbitMQ
+RABBITMQ_URL = 'amqp://shopkeeper:shopkeeper@rabbitmq:5672/'
+
+CELERY_BROKER_URL = 'amqp://shopkeeper:shopkeeper@rabbitmq:5672/'
+
+# EMAIL
+DEFAULT_FROM_EMAIL = 'bazaroffalex@gmail.com'
+
+# STRIPE
+
+# add your secrets key
+# import from secrets.py
+if  not STRIPE_SECRET_KEY and not STRIPE_WEBHOOK_SECRET:
+    STRIPE_SECRET_KEY = 'your key'
+    STRIPE_WEBHOOK_SECRET = 'your key'
+
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51S4nbnBl25cyInfHodSbbQXbBowT3MzNI8kTI9zOu5avebqLrVQBo5Dw20szH4wktegbdlFMkcim0gQKExrQ57YJ00aCOb6Ef8'
+STRIPE_API_VERSION = '2025-09-30.clover'

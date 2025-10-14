@@ -1,0 +1,62 @@
+{% extends 'shop/base.html' %}
+{% load thumbnail %}
+
+{% block title %}
+    Payment processing
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-start fw-bold mt-3">Your order items:</h1>
+    <table class="container-fluid mt-5">
+        <thead>
+            <tr class="text-center">
+                <th>Image</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Total cost</th>
+            </tr>
+        </thead>
+        <tbody class="border-bottom">
+            {% for item in order_items %}
+                <tr class="text-center align-middle">
+                    <td class="py-3">
+                        {% thumbnail item.product.image '150x150' as im %}
+                        <img src="{{ im.url }}">
+                    </td>
+                    <td>
+                        {{ item.product.name|truncatewords:4 }}
+                    </td>
+                    <td>
+                        {{ item.quantity }}
+                    </td>
+                    <td class="fw-bold">
+                        ${{ item.price }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="pt-5 align-middle fs-4">
+                <td class="text-end text-s p-3" colspan="3">
+                    Total:
+                </td>
+                <td class="text-center fw-bold">
+                    ${{ order.get_total_cost }}
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    <div class="container-fluid text-end">
+        <div class="btn-group mt-5">
+            <a class="btn btn-danger rounded me-3"
+            href="{% url 'payment:annulment' %}">Cancel</a>
+            <form method="POST" action="{% url 'payment:process' %}">
+                {% csrf_token %}
+                <input class="btn btn-success rounded me-5" type="submit"
+                value="Pay">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

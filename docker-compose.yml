@@ -1,5 +1,10 @@
+x-environment: &common-environment
+  DJANGO_SETTINGS_MODULE: eshop.settings.local
+  POSTGRES_DB: eshop
+  POSTGRES_USER: shopkeeper
+  POSTGRES_PASSWORD: shopkeeper
+  RABBITMQ_URL: amqp://shopkeeper:shopkeeper@rabbitmq:5672/
 services:
-
   postgres:
     image: postgres:15
     volumes:
@@ -18,6 +23,25 @@ services:
       start_period: 10s
     restart: unless-stopped
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    volumes:
+      - ./data/broker/data:/var/lib/rabbitmq
+      - ./data/broker/logs:/var/log/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=shopkeeper
+      - RABBITMQ_DEFAULT_PASS=shopkeeper
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', 'ping']
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
   web:
     build: .
     command: ["python", "/code/eshop/manage.py", "runserver",
@@ -27,11 +51,63 @@ services:
       - .:/code
     ports:
       - "8000:8000"
-    environment:
-      - DJANGO_SETTINGS_MODULE=eshop.settings.local
-      - POSTGRES_DB=eshop
-      - POSTGRES_USER=shopkeeper
-      - POSTGRES_PASSWORD=shopkeeper
+    environment: *common-environment
     depends_on:
+      rabbitmq:
+        condition: service_healthy
       postgres:
         condition: service_healthy
+
+  celery_worker:
+    build: .
+    command: ['celery', '-A', 'eshop', 'worker', '-l', 'info']
+    working_dir: /code/eshop
+    volumes:
+      - .:/code
+    environment: *common-environment
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  celery_beat:
+    build: .
+    command: ['celery', '-A', 'eshop', 'beat', '-l', 'info']
+    working_dir: /code/eshop
+    volumes:
+      - .:/code
+    environment: *common-environment
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  celery_flower:
+    build: .
+    command: ['celery', '-A', 'eshop', 'flower', '--port=5555']
+    working_dir: /code/eshop
+    volumes:
+      - .:/code
+    ports:
+      - "5555:5555"
+    environment: *common-environment
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  stripe:
+    image: stripe/stripe-cli
+    command: listen --forward-to http://web:8000/payment/webhook/ --skip-verify
+    depends_on:
+      web:
+        condition: service_started
+    networks:
+      - default
+    restart: unless-stopped

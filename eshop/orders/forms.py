@@ -1,0 +1,26 @@
+from django import forms
+
+from .models import Order
+
+class OrderCreateForm(forms.ModelForm):
+    """
+    Form for creation orders
+    """
+    class Meta:
+        model = Order
+        fields = ['first_name', 'last_name', 'email', 'phone',
+                  'city', 'address', 'postal_code']
+        
+    def __init__(self, user, profile, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+        if user and user.is_authenticated:
+            # add initial values
+            self.fields['email'].initial = user.email
+            self.fields['first_name'].initial = user.first_name
+            self.fields['last_name'].initial = user.last_name
+            self.fields['phone'].initial = profile.phone
+            self.fields['city'].initial = profile.city
+            self.fields['address'].initial = profile.address
+            self.fields['postal_code'].initial = profile.postal_code
