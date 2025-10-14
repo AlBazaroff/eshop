@@ -9,6 +9,7 @@ from .forms import EmailAuthenticationForm, UserRegistrationForm, \
     EmailPasswordResetForm, EditUserForm, EmailPasswordChangeForm, \
     EditProfileForm
 from .models import Profile
+from .user_orders import order_list, order_detail
 
 class LoginView(auth_views.LoginView):
     """
