@@ -1,3 +1,8 @@
+#!cart.py
+"""
+Implementation of cart in app
+"""
+
 from decimal import Decimal
 from django.conf import settings
 

@@ -1,5 +1,6 @@
 from django import forms
 
+# Range for quantity which can be chosen
 PRODUCT_QUANTITIES = [(i, str(i)) for i in range(1,11)]
 
 class CartAddProductForm(forms.Form):

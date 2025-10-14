@@ -1,5 +1,4 @@
 {% extends 'shop/base.html' %}
-{% load static %}
 {% load thumbnail %}
 
 {% block title %}
@@ -15,23 +14,17 @@
                     {% with product=item.product %}
                     <tr>
                         <td class="text-center py-3">
-                            {% if product.image %}
-                                {% thumbnail product.image 150x150 as im %}
-                                <img src="{{ im.url }}">
-                            {% else %}
-                                <img
-                                src="{% static 'img/no_image_available.jpg' %}"
-                                style="max-width: 150px; max-height:150 px;">
-                            {% endif %}
+                            {% thumbnail product.image 150x150 as im %}
+                            <img src="{{ im.url }}">
                         </td>
-                        <td class="">
+                        <td>
                             <h5>
                                 <a class='text-decoration-none'
                                 href="{{ product.get_absolute_url }}">
                                     {{ product.name|truncatewords:5 }}
                                 </a>
                             </h5>
-                            <p>{{ product.description|truncatewords:10|linebreaks }}</p>
+                            <p>{{ product.description|truncatewords:10|linebreaks }} </p>
                         </td>
                         <td class="text-center">
                             <form action="{% url 'cart:add_cart' product.id %}"
@@ -83,7 +76,8 @@
                         Clear
                     </button>
                 </form>
-                <a href="{% url 'orders:create_order' %}" class="btn btn-primary rounded">Checkout</a>
+                <a href="{% url 'orders:create_order' %}"
+                class="btn btn-primary rounded">Checkout</a>
             </div>
         </div>
     {% else %}
