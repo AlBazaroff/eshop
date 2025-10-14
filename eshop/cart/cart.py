@@ -16,6 +16,17 @@ class Cart:
             cart = self.session[settings.CART_SESSION_ID] = {}
         
         self.cart = cart
+        self._products = None
+
+    def _get_products(self):
+        """
+        Cache products
+        prevent double query
+        """
+        if self._products is None:
+            product_ids = self.cart.keys()
+            self._products = Product.objects.filter(id__in=product_ids)
+        return self._products
 
     def add(self, product, quantity=1, override_quantity=False):
         """
@@ -33,27 +44,37 @@ class Cart:
         # if price was changed
         if self.cart[product_id]['price'] != str(product.price):
             self.cart[product_id]['price'] = str(product.price)
+
+        # reset cache before save
+        self._products = None
         self.save()
 
     def save(self):
-        # mark session like changed
+        " save session "
+        # mark session as changed
         self.session.modified = True
 
     def remove(self, product):
         """
-        remove from cart
+        Remove from cart
         """
         product_id = str(product.id)
         if self.cart[product_id]:
             del self.cart[product_id]
+            # reset cache
+            self._products = None
             self.save()
 
     def clear(self):
-        " clear cart "
+        " Clear cart "
         del self.session[settings.CART_SESSION_ID]
         self.save()
 
     def total_price(self):
+        """
+        Total price of product
+        Calc: price * quantity
+        """
         return sum(Decimal(value['price']) * value['quantity']
             for value in self.cart.values())
 
@@ -61,9 +82,8 @@ class Cart:
         """
         iter for items in cart 
         """
-        product_ids = self.cart.keys()
-        products = Product.objects.filter(id__in=product_ids)
-        # save temp product in cart
+        products = self._get_products()
+        # save product in temp_cart
         temp_cart = self.cart.copy()
         for product in products:
             temp_cart[str(product.id)]['product'] = product
