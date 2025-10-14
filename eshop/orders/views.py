@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import Http404
 from django.contrib import messages
-from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
 
-from .models import Order, OrderItem
+from .models import OrderItem
 from .forms import OrderCreateForm
-from cart.cart import Cart
 from .tasks import order_created
+from account.models import Profile
+from cart.cart import Cart
 
 
 def check_cart(func):
@@ -33,8 +32,13 @@ def create_order(request):
     """
     cart = Cart(request)
     user = request.user
+    if user.is_authenticated:
+        profile = Profile.objects.get(user=user)
+    else:
+        profile = None
+
     if request.method == 'POST':
-        create_form = OrderCreateForm(user, request.POST)
+        create_form = OrderCreateForm(user, profile, request.POST)
         if create_form.is_valid():
             order = create_form.save(commit=False)
             if request.user.is_authenticated:
@@ -57,7 +61,7 @@ def create_order(request):
             # to orders payment
             return redirect('payment:process')
     else:
-        create_form = OrderCreateForm(user)
+        create_form = OrderCreateForm(user, profile)
     return render(request,
                   'orders/create_order.html',
                   {'cart': cart,
