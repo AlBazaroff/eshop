@@ -16,6 +16,7 @@ class OrderCreateForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
         if user and user.is_authenticated:
+            # add initial values
             self.fields['email'].initial = user.email
             self.fields['first_name'].initial = user.first_name
             self.fields['last_name'].initial = user.last_name
