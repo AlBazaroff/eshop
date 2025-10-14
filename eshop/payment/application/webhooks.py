@@ -1,3 +1,7 @@
+#!webhooks.py
+"""
+Webhooks for stripe
+"""
 import stripe
 
 from django.http import HttpResponse
@@ -9,7 +13,9 @@ from orders.models import Order
 @csrf_exempt
 def stripe_webhook(request):
     """
-    Webhook for stripe
+    Webhook for stripe.
+    Works to define pay status of order
+    and change order status if paid
     """
     event = None
     payload = request.body

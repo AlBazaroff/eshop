@@ -9,11 +9,10 @@ from .forms import EmailAuthenticationForm, UserRegistrationForm, \
     EmailPasswordResetForm, EditUserForm, EmailPasswordChangeForm, \
     EditProfileForm
 from .models import Profile
-from .user_orders import order_list, order_detail
 
 class LoginView(auth_views.LoginView):
     """
-    Login
+    Login users
     """
     form_class = EmailAuthenticationForm
     template_name = 'account/register/login.html'
@@ -25,6 +24,9 @@ def custom_logout(request):
     return redirect('shop:product_list')
 
 def register(request):
+    """
+    Custom registration by email
+    """
     if request.user.is_authenticated:
         redirect('shop:product_list')
 

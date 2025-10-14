@@ -1,4 +1,7 @@
 #! user_orders.py
+"""
+Views for user orders
+"""
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 
@@ -22,7 +25,8 @@ def order_detail(request, order_id):
     order = get_object_or_404(Order,
                               pk=order_id,
                               user=request.user)
-    # add to items joins for product, to prevent N+1
+    # add for items joins to product,
+    # for preventing N+1 problem
     items = OrderItem.objects.filter(order=order).select_related('product')
 
     total_cost = sum([item.get_cost() for item in items])
