@@ -53,6 +53,7 @@ class Profile(models.Model):
     Profiles for user
     """
     user = models.OneToOneField(User,
+                                related_name='profile',
                                 on_delete=models.CASCADE)
     phone = models.CharField(max_length=20,
                              blank=True,
