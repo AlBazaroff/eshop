@@ -1,5 +1,4 @@
 {% extends 'shop/base.html' %}
-{% load static %}
 {% load thumbnail %}
 
 {% block title %}
@@ -19,15 +18,11 @@
             </tr>
         </thead>
         <tbody class="border-bottom">
-            {% for item in order.items.all %}
+            {% for item in order_items %}
                 <tr class="text-center align-middle">
                     <td class="py-3">
-                        {% if item.product.image %}
-                            {% thumbnail item.product.image '150x150' as im %}
-                            <img src="{{ im.url }}">
-                        {% else %}
-                            <img src="{% static 'img/no_image_available.jpg' %}">
-                        {% endif %}
+                        {% thumbnail item.product.image '150x150' as im %}
+                        <img src="{{ im.url }}">
                     </td>
                     <td>
                         {{ item.product.name|truncatewords:4 }}
@@ -54,10 +49,12 @@
     </table>
     <div class="container-fluid text-end">
         <div class="btn-group mt-5">
-            <a class="btn btn-danger rounded me-3" href="{% url 'shop:product_list' %}">Cancel</a>
+            <a class="btn btn-danger rounded me-3"
+            href="{% url 'shop:product_list' %}">Cancel</a>
             <form method="POST" action="{% url 'payment:process' %}">
                 {% csrf_token %}
-                <input class="btn btn-success rounded me-5" type="submit" value="Pay">
+                <input class="btn btn-success rounded me-5" type="submit"
+                value="Pay">
             </form>
         </div>
     </div>
