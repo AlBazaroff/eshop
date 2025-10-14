@@ -3,15 +3,13 @@
         <span>
             {% if page.has_previous %}
                 <a href="?page={{ page.previous_page_number }}">
-                    <i class="bi bi-arrow-left-short"></i>
-                </a>
+                    <i class="bi bi-arrow-left-short"></i></a>
             {% endif %}
             Page <span class="fw-bold">{{ page.number }}</span>
             of {{ page.paginator.num_pages }}
             {% if page.has_next %}
                 <a href="?page={{ page.next_page_number }}">
-                    <i class="bi bi-arrow-right-short"></i>
-                </a>
+                    <i class="bi bi-arrow-right-short"></i></a>
             {% endif %}
         </span>
     </div>
