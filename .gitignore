@@ -1,6 +1,7 @@
 __pycache__/
 env/
 data/
+staticfiles/
 migrations/
 media/
 .DS_Store
