@@ -50,7 +50,7 @@
     <div class="container-fluid text-end">
         <div class="btn-group mt-5">
             <a class="btn btn-danger rounded me-3"
-            href="{% url 'shop:product_list' %}">Cancel</a>
+            href="{% url 'payment:annulment' %}">Cancel</a>
             <form method="POST" action="{% url 'payment:process' %}">
                 {% csrf_token %}
                 <input class="btn btn-success rounded me-5" type="submit"
