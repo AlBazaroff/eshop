@@ -1,0 +1,14 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+    Search
+{% endblock %}
+
+{% block content %}
+    <div class="container my-5">
+        <h2>Search results for: {{ name }}</h2>
+    </div>
+    <div class="container">
+        {% include 'shop/product/list.html' %}
+    </div>
+{% endblock %}

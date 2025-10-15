@@ -43,7 +43,7 @@ class Product(models.Model):
         ordering = ['name']
         indexes = [
             models.Index(fields=['id', 'slug']),
-            # models.Index(fields=['name']), for search and sorting
+            models.Index(fields=['name']), # for search and sorting
             models.Index(fields=['-created']),
         ]
     

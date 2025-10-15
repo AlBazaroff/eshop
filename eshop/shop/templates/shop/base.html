@@ -28,6 +28,7 @@
           </a>
         </div>
         <div class="col">
+          <input type="text" placeholder="Search" class="form-control" id="search"/>
         </div>
         <div class="col-3 text-end">
           <div class="btn-group">
@@ -82,5 +83,18 @@
         </p>
       </div>
     </footer>
+
+    <script>
+      // event to start searching in db
+      const search = document.getElementById('search')
+      search.addEventListener('keydown', function(event){
+        if (event.key === 'Enter' && this.value != ''){
+          const value = this.value;
+          window.location.href = `/search/${value}`;
+        }
+      });
+      
+    </script>
+
   </body>
 </html>

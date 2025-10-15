@@ -45,3 +45,18 @@ def product_detail(request, id, slug):
                   'shop/product/product_detail.html',
                   {'product': product,
                    'cart_form': cart_form})
+
+def product_search(request, name):
+    """
+    Search product from catalog
+    by name
+    """
+    products = Product.objects.filter(name__contains=name)
+    paginator = Paginator(products, 7)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+    
+    return render(request,
+                  'shop/product/product_search.html',
+                  {'name': name,
+                   'products': products})
