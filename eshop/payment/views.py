@@ -24,6 +24,7 @@ def payment_canceled(request):
     """
     Canceled payment
     """
+    del request.session['order_id']
     return render(request, 'payment/canceled.html')
 
 def payment_completed(request):
@@ -34,6 +35,7 @@ def payment_completed(request):
     order = Order.objects.get(id=order_id)
     order.paid = True
     order.save()
+    del request.session['order_id']
     return render(request, 'payment/completed.html')
 
 @never_cache
@@ -72,7 +74,6 @@ def payment_process(request):
 
             )
         # create Checkout session
-        del request.session['order_id']
         session = stripe.checkout.Session.create(**data)
         
         return redirect(session.url, code=303)
