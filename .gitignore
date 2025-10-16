@@ -21,3 +21,4 @@ celery.log
 *.celeryconfig
 celeryconfig.py
 
+search_requests.sh
