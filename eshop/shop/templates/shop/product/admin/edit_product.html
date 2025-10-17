@@ -1,0 +1,13 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+    {% if product %}
+        Update product {{ product.name|truncatewords:1 }}
+    {% else %}
+        Add product
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}

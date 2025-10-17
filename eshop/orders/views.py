@@ -16,8 +16,7 @@ def check_cart(func):
     If cart is empty return Http404
     else return create_order
     """
-    def wrapper(*args, **kwargs):
-        request = args[0]
+    def wrapper(request, *args, **kwargs):
         cart = Cart(request)
         if cart:
             return func(*args, **kwargs)

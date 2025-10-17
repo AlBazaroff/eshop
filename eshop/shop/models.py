@@ -64,6 +64,8 @@ class ProductContent(models.Model):
     product = models.ForeignKey(Product,
                                 related_name='content',
                                 on_delete=models.CASCADE)
+    # For content of description
+    # used contenttypes framework
     content_type = models.ForeignKey(ContentType,
                                      on_delete=models.CASCADE,
                                      limit_choices_to={'model__in':(
@@ -80,9 +82,11 @@ class ProductContent(models.Model):
             models.Index(fields=['content_type', 'object_id']),
         ]
 
+# Models for content based on DescriptionBase 
+# return after create admin page for products
 class DescriptionBase(models.Model):
     """
-    Abstract class for content
+    Abstract class for any content
     """
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
