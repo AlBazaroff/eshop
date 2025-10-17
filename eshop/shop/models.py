@@ -1,5 +1,7 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 class Category(models.Model):
     """
@@ -53,3 +55,51 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('shop:product_detail',
                        args=[self.id, self.slug])
+    
+class ProductContent(models.Model):
+    """
+    Content for product,
+    like images, videos
+    """
+    product = models.ForeignKey(Product,
+                                related_name='content',
+                                on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType,
+                                     on_delete=models.CASCADE,
+                                     limit_choices_to={'model__in':(
+                                         'text',
+                                         'image',
+                                         'video'
+                                     )}
+                                     )
+    object_id = models.PositiveBigIntegerField()
+    item = GenericForeignKey('content_type', 'object_id')
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['content_type', 'object_id']),
+        ]
+
+class DescriptionBase(models.Model):
+    """
+    Abstract class for content
+    """
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class Text(DescriptionBase):
+    """
+    Text content
+    """
+    content = models.TextField()
+
+class Image(DescriptionBase):
+    " Image content "
+    file = models.ImageField(upload_to='products/%Y/%m/%d')
+
+class Video(DescriptionBase):
+    " Video content "
+    file = models.FileField(upload_to='files/')
