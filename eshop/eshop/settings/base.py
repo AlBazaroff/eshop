@@ -110,6 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # AUTHENTICATE SETTINGS
+
 AUTH_USER_MODEL = 'account.User'
 AUTHENTICATION_BACKENDS = [
     'account.backends.EmailBackend',

@@ -1,6 +1,7 @@
 #! user_orders.py
 """
-Views for user orders
+Module for user orders views
+in personal account
 """
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -12,6 +13,7 @@ from orders.models import Order, OrderItem
 def order_list(request):
     """
     Check orders placed by current user
+    and paginate them
     """
     orders = Order.objects.filter(user=request.user)
     paginator = Paginator(orders, 30)
@@ -24,7 +26,8 @@ def order_list(request):
 @login_required
 def order_detail(request, order_id):
     """
-    Check order detail
+    Check order details
+    for personal account
     """
     order = get_object_or_404(Order,
                               pk=order_id,
@@ -38,5 +41,5 @@ def order_detail(request, order_id):
     return render(request,
                   'account/orders/order_detail.html',
                   {'total_cost': total_cost,
-                   'order': order,
-                   'items': items})
+                  'order': order,
+                  'items': items})

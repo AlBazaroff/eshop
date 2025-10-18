@@ -4,10 +4,14 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 class UserManager(BaseUserManager):
     """
-    Work with new User model
+    Custom user model manager where email is the unique identifier.
+    
+    Handles user creation for both regular users and superusers.
     """
     def create_user(self, email, password=None, **extra_fields):
-        " create new user "
+        """
+        Create new user by email in admin panel
+        """
         if not email:
             raise ValueError('The email field must be set')
         email = self.normalize_email(email)
@@ -17,7 +21,9 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        " create superuser "
+        """
+        Give superuser access for user
+        """
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -30,7 +36,10 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 class User(AbstractUser):
-    """ User model """
+    """
+    User model
+    make email as main field in model
+    """
     email = models.EmailField(unique=True,
                               db_index=True,
                               verbose_name='Email')
@@ -50,7 +59,8 @@ class User(AbstractUser):
     
 class Profile(models.Model):
     """
-    Profiles for user
+    User profile with personal fields:
+    phone, city, address, postal_code
     """
     user = models.OneToOneField(User,
                                 related_name='profile',

@@ -13,14 +13,16 @@ from .user_orders import order_list, order_detail
 
 class LoginView(auth_views.LoginView):
     """
-    Login users
+    Login users by email
     """
     form_class = EmailAuthenticationForm
     template_name = 'account/register/login.html'
 
 @login_required
 def custom_logout(request):
-    " custom logout "
+    """
+    User logout
+    """
     logout(request)
     return redirect('shop:product_list')
 
@@ -86,24 +88,37 @@ def password_change(request):
                   'account/password_change.html',
                   {'form': form})
 
+@login_required
+@admin_required
+def admin_menu(request):
+    " View for admin menu "
+
+
 class PasswordResetView(auth_views.PasswordResetView):
-    """ View for reset password by email """
+    """
+    View for reset password by email
+    """
     form_class = EmailPasswordResetForm
     template_name = 'account/register/password_reset.html'
     email_template_name = 'account/register/password_reset_email.html'
     success_url = '/password-reset/done/'
 
 class PasswordResetDoneView(auth_views.PasswordResetDoneView):
-    """ View for reset done  """
+    """
+    View for reset done
+    """
     template_name = 'account/register/password_reset_done.html'
 
 class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
-    """ Confirmation reset """
+    """
+    Confirmation reset
+    """
     form_class = SetPasswordForm
     template_name = 'account/register/password_reset_confirm.html'
     success_url = '/reset/done/'
 
 class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
-    """ Complete password reset"""
+    """
+    Complete password reset
+    """
     template_name = 'account/register/password_reset_complete.html'
-

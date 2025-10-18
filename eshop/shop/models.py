@@ -5,7 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 class Category(models.Model):
     """
-    Product's categories
+    Product's category model
     """
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200)
@@ -23,8 +23,10 @@ class Category(models.Model):
 
 class Product(models.Model):
     """
-    Product selling in the shop
-    if available = False, not selling
+    Product model
+    if available = False, item not selling
+    fields:
+        name, slug, description, category, image, price, available
     """
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200)
@@ -58,8 +60,9 @@ class Product(models.Model):
     
 class ProductContent(models.Model):
     """
-    Content for product,
-    like images, videos
+    Content for product like images, videos
+    Using contenttypes framework and generic foreign key
+    to relate content from different tables with product
     """
     product = models.ForeignKey(Product,
                                 related_name='content',
@@ -96,14 +99,18 @@ class DescriptionBase(models.Model):
 
 class Text(DescriptionBase):
     """
-    Text content
+    Text content model
     """
     content = models.TextField()
 
 class Image(DescriptionBase):
-    " Image content "
+    """
+    Image content
+    """
     file = models.ImageField(upload_to='products/%Y/%m/%d')
 
 class Video(DescriptionBase):
-    " Video content "
+    """
+    Video content
+    """
     file = models.FileField(upload_to='files/')

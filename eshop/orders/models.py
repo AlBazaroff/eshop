@@ -8,7 +8,13 @@ from account.models import User
 
 class Order(models.Model):
     """
-    Serve for users orders
+    Model for orders in shop
+    Orders can created by authorized users and guests
+    Duplicate data for guests and authorized user
+    Fields:
+        user: if user authorized, create relation between order and user
+        first_name, last_name, email, phone, city, address, postal_code
+        paid, stripe_id
     """
     # if user authenticated create order
     # we define him
@@ -31,8 +37,7 @@ class Order(models.Model):
             regex=r'^\+?1?\d{9,15}$',
             message="Phone number must be in format: '+999999999'.\
                 Up to 15 digits allowed."
-            )
-        ],
+        )],
         verbose_name='Phone number'
     )
 
@@ -68,12 +73,16 @@ class Order(models.Model):
         return f'Order {self.id}'
 
     def get_total_cost(self):
-        " return total cost of order "
+        """
+        return total cost of items in order
+        """
         return sum(item.get_cost()
                    for item in self.items.all())
     
     def get_stripe_url(self):
-        " return url to payment "
+        """
+        return url to stripe payment
+        """
         if not self.stripe_id:
             return ''
         if '_test_' in settings.STRIPE_SECRET_KEY:
@@ -104,5 +113,8 @@ class OrderItem(models.Model):
         return str(self.id)
     
     def get_cost(self):
-        " return cost of items in the position "
+        """
+        Calculation of total cost of item in position
+        Calc: price * quantity
+        """
         return (self.price * self.quantity)

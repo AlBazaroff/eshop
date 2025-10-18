@@ -1,4 +1,8 @@
 # CELERY setting
+"""
+This module
+used for emails
+"""
 import os
 
 from celery import Celery

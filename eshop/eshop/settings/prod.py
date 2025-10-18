@@ -7,6 +7,7 @@ ADMINS = [
 ]
 
 # EMAIL SETTINGS
+# Add your own or import
 
 EMAIL_HOST = ''
 EMAIL_PORT = ''

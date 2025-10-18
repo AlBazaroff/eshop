@@ -2,11 +2,12 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
 from .models import User, Profile
-# Register your models here.
+
 @admin.register(User)
 class UserAdmin(UserAdmin):
     """
     Custom UserAdmin for model User
+    email is main field instead username
     """
     list_display = ['email', 'first_name', 'last_name', 'is_staff', 'is_active']
     list_filter = ['is_staff', 'is_active', 'date_joined']
@@ -31,7 +32,7 @@ class UserAdmin(UserAdmin):
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     """
-    User profiles
+    User profiles in admin panel
     """
     list_display = ['user', 'phone', 'city', 'postal_code']
     list_filter = ['city']

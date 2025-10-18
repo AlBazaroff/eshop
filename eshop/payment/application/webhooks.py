@@ -1,6 +1,7 @@
 #!webhooks.py
 """
-Webhooks for stripe
+Handle Stripe webhook events.
+Stripe initiates these calls when events occur in their system.
 """
 import stripe
 

@@ -36,7 +36,11 @@ def product_list(request, category_slug=None):
 
 def product_detail(request, id, slug):
     """
-    View product's details
+    View for product's details
+    Display details of current product
+    Args:
+        id: product id
+        slug: product slug
     """
     product = get_object_or_404(Product,
                                 id=id,
@@ -50,8 +54,9 @@ def product_detail(request, id, slug):
 
 def product_search(request, name):
     """
-    Search product from catalog
-    by name
+    View for searching Product from catalog by name
+    Args:
+        name: name of product
     """
     products = Product.objects.filter(name__contains=name)
     paginator = Paginator(products, 7)

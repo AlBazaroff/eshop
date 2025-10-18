@@ -6,14 +6,14 @@ from .models import User, Profile
 
 class PhoneInput(forms.TextInput):
     """
-    Field for phone input
-    with validation
+    Field for phone input validation by existing phone numbers
     """
     def __init__(self, attrs=None):
         default_attrs = {
             'class': 'form-control',
             'pattern': r'^\+?1?\d{9,15}$',
-            'title': "Phone number must be in format: '+999999999'. Up to 15 digits allowed."
+            'title': "Phone number must be in format: '+999999999'."\
+                "Up to 15 digits allowed."
         }
         if attrs:
             default_attrs.update(attrs)
@@ -21,8 +21,7 @@ class PhoneInput(forms.TextInput):
 
 class PostalCodeInput(forms.TextInput):
     """
-    Field for postal code input
-    with validation
+    Field for postal code input validation by existing postal codes
     """
     def __init__(self, attrs=None):
         default_attrs = {
@@ -34,8 +33,13 @@ class PostalCodeInput(forms.TextInput):
         super().__init__(attrs=default_attrs)
 
 class FormControlMixin:
-    """ Mixin for adding bootstrap classes"""
-    def __init__(self, *args, ph: bool = True, **kwargs):
+    """
+    Mixin for set up form elements
+    and add classes for bootstrap
+    Args:
+        ph: add placeholder if ph = True
+    """
+    def __init__(self, *args, ph = True, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
@@ -43,7 +47,10 @@ class FormControlMixin:
                 field.widget.attrs['placeholder'] = f'Enter your {field.label.lower()}'
 
 class EmailAuthenticationForm(FormControlMixin, AuthenticationForm):
-    """ User login form """
+    """
+    Login user by email form
+    change username field to email field
+    """
     username = forms.EmailField(
         label='Email',
         widget=forms.EmailInput(attrs={
@@ -54,7 +61,9 @@ class EmailAuthenticationForm(FormControlMixin, AuthenticationForm):
     )
 
 class UserRegistrationForm(FormControlMixin, UserCreationForm):
-    """ Form for user register"""
+    """
+    Form for user register with email, name and password
+    """
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={
             'placeholder': 'Enter your email',
@@ -90,9 +99,14 @@ class UserRegistrationForm(FormControlMixin, UserCreationForm):
 
 class EmailPasswordResetForm(PasswordResetForm):
     """ 
-    Password reset by email
+    Reset password by email
     """
     def get_users(self, email):
+        """
+        Get user model by email
+        Args:
+            email: user email
+        """
         User = get_user_model()
         active_users = User.objects.filter(
             email__iexact=email,
@@ -102,7 +116,7 @@ class EmailPasswordResetForm(PasswordResetForm):
     
 class EditUserForm(FormControlMixin, forms.ModelForm):
     """
-    Edit user information
+    Edit user data form
     """
     
     class Meta:
@@ -115,6 +129,8 @@ class EditUserForm(FormControlMixin, forms.ModelForm):
 class EditProfileForm(FormControlMixin, forms.ModelForm):
     """
     Edit users profile
+    set up phone and postal_code fields
+    for manage input
     """
     phone = forms.CharField(
         widget=PhoneInput,

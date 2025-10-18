@@ -27,7 +27,7 @@ def check_cart(func):
 @check_cart
 def create_order(request):
     """
-    Create order by cart
+    Create order by cart from session
     """
     cart = Cart(request)
     user = request.user
