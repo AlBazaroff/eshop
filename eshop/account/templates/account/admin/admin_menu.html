@@ -1,0 +1,22 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+    Admin menu
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row py-5">
+            <div class="col-3">
+                <h1 class="py-4">Admin menu:</h1>
+                <ul class="list-group"> 
+                    <li class="list-group-item">
+                        <a href="{% url 'shop:admin_product_list' %}">
+                            Product list
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'shop/base.html' %}
 
 {% block title %}
     Product list
@@ -7,11 +7,64 @@
 {% block content %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-3">
+            <h1 class="my-3 text-center">Product list</h1>
+            <div class="text-end py-2 pe-4">
+                <a class="btn btn-success" href="{% url 'shop:product_add' %}">
+                    Add product
+                </a>
+            </div>
+            <div class="col-2 bg-light">
+                <h3 class="text-center">Filters</h3>
                 <!-- Filters -->
             </div>
             <div class="col">
-                <!-- Product list -->
+                <table class="table table-hover w-100">
+                    <thead class="text-center">
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Available</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </thead>
+                    <tbody class="text-center">
+                        {% for product in products %}
+                        <tr>
+                            <td class="text-start">
+                                <a style="text-decoration: none; color: inherit"
+                                href="{{ product.get_absolute_url }}">
+                                    {{ product.name|truncatewords:5 }}
+                                </a>
+                            </td>
+                            <td>
+                                <input class="form-check-input bg-success"
+                                type="checkbox" id="available"
+                                {% if product.available  %}checked{% endif %} disabled>
+                            </td>
+                            <td>
+                                {{ product.updated }}
+                            </td>
+                            <td class="fw-bold">
+                                ${{ product.price }}
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <form action="{% url 'shop:product_update' product.id %}"
+                                    method="POST">
+                                        {% csrf_token %}
+                                        <input type="submit" value="Update"
+                                        class="btn btn-primary me-2 rounded">
+                                    </form>
+                                    <form action="{% url 'shop:product_remove' product.id %}"
+                                    method="post">
+                                        <input type="submit" value="Remove"
+                                        class="btn btn-danger rounded"/>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

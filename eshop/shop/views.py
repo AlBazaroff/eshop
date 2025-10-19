@@ -3,8 +3,8 @@ from django.core.paginator import Paginator
 
 from .models import Category, Product
 from cart.forms import CartAddProductForm
-from .admin_views import admin_product_update, admin_product_list, \
-                         admin_product_add
+from .admin_views import product_update, admin_product_list, \
+                         product_add, product_remove
 
 def product_list(request, category_slug=None):
     """
@@ -59,7 +59,7 @@ def product_search(request, name):
         name: name of product
     """
     products = Product.objects.filter(name__contains=name)
-    paginator = Paginator(products, 7)
+    paginator = Paginator(products, 20)
     page_number = request.GET.get('page')
     products = paginator.get_page(page_number)
     

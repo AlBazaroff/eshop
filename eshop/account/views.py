@@ -3,13 +3,14 @@ from django.contrib.auth import login, logout, update_session_auth_hash, \
     views as auth_views
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
 
 from .forms import EmailAuthenticationForm, UserRegistrationForm, \
     EmailPasswordResetForm, EditUserForm, EmailPasswordChangeForm, \
     EditProfileForm
-from .models import Profile
 from .user_orders import order_list, order_detail
+from .models import Profile
 
 class LoginView(auth_views.LoginView):
     """
@@ -88,10 +89,13 @@ def password_change(request):
                   'account/password_change.html',
                   {'form': form})
 
-@login_required
-@admin_required
+@staff_member_required
 def admin_menu(request):
-    " View for admin menu "
+    """
+    Admin menu in account settings
+    """
+    return render(request,
+                  'account/admin/admin_menu.html')
 
 
 class PasswordResetView(auth_views.PasswordResetView):

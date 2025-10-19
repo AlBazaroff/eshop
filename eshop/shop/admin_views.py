@@ -3,16 +3,14 @@
 Views for seller functionality in shop
 """
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 
 from .models import Product
 from .forms import ProductForm
-from account.admin_decorators import admin_required
 
-@login_required
-@admin_required
+@staff_member_required
 def admin_product_list(request):
     """
     Admin product list view in the admin panel
@@ -26,9 +24,8 @@ def admin_product_list(request):
                   'shop/product/admin/product_list.html',
                   {'products': products})
 
-@login_required
-@admin_required
-def admin_product_update(request, product_id):
+@staff_member_required
+def product_update(request, product_id):
     """
     View for updating existing item by admin
     Args:
@@ -50,9 +47,8 @@ def admin_product_update(request, product_id):
                   {'product': product,
                    'form': form})
 
-@login_required
-@admin_required
-def admin_product_add(request):
+@staff_member_required
+def product_add(request):
     """
     View for adding new product, works only for admin with permission
     """
@@ -69,3 +65,13 @@ def admin_product_add(request):
     return render(request,
                   'shop/product/admin/edit_product.html',
                   {'form': form})
+
+@staff_member_required
+def product_remove(request, product_id):
+    """
+    View for removing item from webserver
+    """
+    product = get_object_or_404(Product,
+                                pk=product_id)
+    product.delete()
+    return redirect('shop:admin_product_list')
