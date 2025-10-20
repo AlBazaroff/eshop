@@ -33,7 +33,7 @@ def product_update(request, product_id):
     """
     product = get_object_or_404(Product, id=product_id)
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        form = ProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
             product = form.save()
             messages.success(request,
@@ -41,7 +41,7 @@ def product_update(request, product_id):
                             {product.pk}')
             return redirect('shop:admin_product_list')
     else:
-        form = ProductForm()
+        form = ProductForm(instance=product)
     return render(request,
                   'shop/product/admin/edit_product.html',
                   {'product': product,
