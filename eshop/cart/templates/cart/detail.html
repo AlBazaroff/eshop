@@ -9,11 +9,11 @@
     {% if cart %}
     <div class="conainer mt-5 fw-bold text-start fs-6"></div>
         <table class="container border-bottom border-primary border-3">
-            <tbody>
+            <tbody class="text-center">
                 {% for item in cart %}
                     {% with product=item.product %}
                     <tr>
-                        <td class="text-center py-3">
+                        <td class="py-3">
                             {% thumbnail product.image 150x150 as im %}
                             <img src="{{ im.url }}">
                         </td>
@@ -26,25 +26,24 @@
                             </h5>
                             <p>{{ product.description|truncatewords:10|linebreaks }} </p>
                         </td>
-                        <td class="text-center">
-                            <form action="{% url 'cart:add_cart' product.id %}"
-                            method="POST">
-                                {% csrf_token %}
-                                {{ item.update_quantity_form.quantity }}
-                                {{ item.update_quantity_form.override }}
-                                <input type="submit" class="btn btn-secondary"
-                                value="Update">
-                            </form>
-                        </td>
-                        <td class="text-start">
-                            <form
-                            action="{% url 'cart:remove_cart' product.id %}"
-                            method="post">
-                                {% csrf_token %}
-                                <input class="btn btn-danger" type="submit"
-                                value="Remove">
-                            </form>
-                            
+                        <td>
+                            <div class="btn-group">
+                                <form action="{% url 'cart:add_cart' product.id %}"
+                                method="POST">
+                                    {% csrf_token %}
+                                    {{ item.update_quantity_form.quantity }}
+                                    {{ item.update_quantity_form.override }}
+                                    <input class="btn btn-secondary rounded me-2"
+                                    value="Update" type="submit">
+                                </form>
+                                <form
+                                action="{% url 'cart:remove_cart' product.id %}"
+                                method="post">
+                                    {% csrf_token %}
+                                    <input class="btn btn-danger rounded"
+                                    type="submit" value="Remove">
+                                </form>
+                            </div>
                         </td>
                         <td>
                             ${{ item.price }} 
@@ -52,7 +51,7 @@
                                 per unit
                             </span>
                         </td>
-                        <td class="text-center text-bold fw-bold fs-5">
+                        <td class="fw-bold fs-5">
                             ${{ item.total_price }}
                         </td>
                     </tr>

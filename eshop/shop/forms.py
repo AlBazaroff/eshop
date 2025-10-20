@@ -12,3 +12,7 @@ class ProductForm(FormControlMixin, forms.ModelForm):
         model = Product
         fields = ['name', 'description', 'category',
                   'image', 'price', 'available']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['available'].widget.attrs['class'] = 'form-check-input'

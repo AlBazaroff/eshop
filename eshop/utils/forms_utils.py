@@ -11,4 +11,4 @@ class FormControlMixin:
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
             if ph:
-                field.widget.attrs['placeholder'] = f'Enter your {field.label.lower()}'
+                field.widget.attrs['placeholder'] = f'Enter {field.label.lower()}'

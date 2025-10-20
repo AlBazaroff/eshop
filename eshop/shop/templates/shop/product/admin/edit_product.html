@@ -1,4 +1,5 @@
 {% extends 'shop/base.html' %}
+{% load thumbnail %}
 
 {% block title %}
     {% if product %}
@@ -9,5 +10,106 @@
 {% endblock %}
 
 {% block content %}
-
+    <div class="container-fluid pb-5">
+        <div class="row py-5">
+            <div class="col-1 fs-2">
+                <a href="{% url 'shop:admin_product_list' %}" style="color: inherit">
+                    <i class="bi bi-arrow-left-circle"></i>
+                </a>
+            </div>
+            <div class="col ps-5">
+                <h2>
+                    {% if product %}
+                        Update product {{ product.name|truncatewords:3 }}
+                    {% else %}
+                        Add product
+                    {% endif %}
+                </h2>
+            </div>
+        </div>
+        <div class="container">
+            <form class="p-2 w-50" method="post">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <label for="id_name" class="col-sm-2 col-form-label">
+                        {{ form.name.label }}:
+                    </label>
+                    <div class="col-sm-10">
+                        {{ form.name }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_description" class="col-sm-2">
+                        {{ form.description.label }}:
+                    </label>
+                    <div class="col-sm-10">
+                        {{ form.description }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_category" class="col-sm-2">
+                        {{ form.category.label }}:
+                    </label>
+                    <div class="col-sm-5">
+                        {{ form.category }}
+                    </div>
+                    <div class="col-sm fs-5">
+                        <!-- add category -->
+                        <button type="button" class="btn btn-outline-success"
+                        data-bs-toggle="modal" data-bs-target="#categoryModal">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_image" class="col-sm-2">
+                        {{ form.image.label }}:
+                    </label>
+                    <div class="col-sm-5">
+                        <div class="py-3">
+                            {% thumbnail form.image.value 150x150 as im %}
+                            <img src="{{ im.url }}">
+                        </div>
+                        <input type="file" name="image" class="form-control" id="id_image" 
+                        {% if form.image.value %}value="{{ form.image.value }}"{% endif %}>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_available" class="col-sm-2">
+                        {{ form.available.label }}:
+                    </label>
+                    <div class="col-sm-10">
+                        {{ form.available }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label for="id_price" class="col-sm-2">
+                        {{ form.price.label }}:
+                    </label>
+                    <div class="col-sm-2">
+                        {{ form.price }}
+                    </div>
+                </div>
+                <div class="text-end">
+                    <input type="submit" value="Accept"
+                    class="btn btn-success">
+                </div>
+            </form>
+            <div class="modal fade" id="categoryModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="#" method="post">
+                            {% csrf_token %}
+                            <div class="modal-header">Add category</div>
+                            <button type="button" class="btn-close"
+                            data-bs-dismiss="modal"></button>
+                        </form>
+                    </div>
+                    <div class="modal-body">
+                        <!--  -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
