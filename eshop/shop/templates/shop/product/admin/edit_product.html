@@ -28,7 +28,8 @@
             </div>
         </div>
         <div class="container">
-            <form class="p-2 w-50" method="post">
+            <form class="p-2 w-50" method="post"
+            enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="row mb-3">
                     <label for="id_name" class="col-sm-2 col-form-label">
@@ -55,7 +56,7 @@
                     </div>
                     <div class="col-sm fs-5">
                         <!-- add category -->
-                        <button type="button" class="btn btn-outline-success"
+                        <button type="button" class="btn btn-outline-success rounded-pill"
                         data-bs-toggle="modal" data-bs-target="#categoryModal">
                             <i class="bi bi-plus"></i>
                         </button>
@@ -66,10 +67,12 @@
                         {{ form.image.label }}:
                     </label>
                     <div class="col-sm-5">
-                        <div class="py-3">
-                            {% thumbnail form.image.value 150x150 as im %}
-                            <img src="{{ im.url }}">
-                        </div>
+                        {% if product %}
+                            <div class="py-3">
+                                {% thumbnail form.image.value 150x150 as im %}
+                                <img src="{{ im.url }}">
+                            </div>
+                        {% endif %}
                         <input type="file" name="image" class="form-control" id="id_image" 
                         {% if form.image.value %}value="{{ form.image.value }}"{% endif %}>
                     </div>
@@ -97,16 +100,29 @@
             </form>
             <div class="modal fade" id="categoryModal" tabindex="-1">
                 <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form action="#" method="post">
-                            {% csrf_token %}
-                            <div class="modal-header">Add category</div>
-                            <button type="button" class="btn-close"
-                            data-bs-dismiss="modal"></button>
+                    <div class="modal-content position-relative">
+                        <button type="button"
+                        class="btn-close position-absolute"
+                        data-bs-dismiss="modal"></button>
+                        <div class="modal-header">Add category</div>
+                        
+                        <form method="POST"
+                            action="{% url 'shop:category_add'}">
+                            <div class="modal-body">
+                                
+                                    {% csrf_token %}
+                                    {{ category_form.as_p }}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" data-bs-dismiss="modal"
+                                class="btn btn-secondary">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    Add category
+                                </button>
+                            </div>
                         </form>
-                    </div>
-                    <div class="modal-body">
-                        <!--  -->
                     </div>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Product
+from .models import Product, Category
 from utils.forms_utils import FormControlMixin
 
 class ProductForm(FormControlMixin, forms.ModelForm):
@@ -16,3 +16,11 @@ class ProductForm(FormControlMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['available'].widget.attrs['class'] = 'form-check-input'
+
+class CategoryForm(FormControlMixin, forms.ModelForm):
+    """
+    Edit category Form
+    """
+    class Meta:
+        model = Category
+        fields = ['name']

@@ -1,14 +1,74 @@
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
-class Category(models.Model):
+class SlugByNameMixin:
+    """
+    Mixin for generating slug by name
+    """
+    __slug_field_name = 'slug'
+    __slug_from_field = 'name'
+    
+    def __slug_queryset(self, model_class, slug):
+        """
+        Queryset of slugs
+        return queryset
+        """
+        slug_filter = {self.__slug_field_name: slug}
+        queryset = model_class.objects.filter(**slug_filter)
+        # exclude current item
+        if self.pk:
+            queryset = queryset.exclude(pk=self.pk)
+        return queryset
+
+    def __generate_unique_slug(self):
+        """
+        Generate unique slug for each item
+        """
+        slug_value = getattr(self, self.__slug_from_field)
+        slug = slugify(slug_value)
+        num = 1
+        model_class = self.__class__
+
+        # create queryset
+        queryset = self.__slug_queryset(model_class, slug)
+
+        while queryset.exists():
+            slug = f'{slug}-{num}'
+            queryset = self.__slug_queryset(model_class, slug)
+            num += 1
+
+        return slug
+
+    def save(self, *args, **kwargs):
+        """
+        Save item instance
+        """
+        if self.pk:
+            try:
+                # if update item
+                old_instance = self.__class__.objects.get(pk=self.pk)
+                old_value = getattr(old_instance, self.__slug_from_field)
+                new_value = getattr(self, self.__slug_from_field)
+                if old_value != new_value:
+                    setattr(self, self.__slug_field_name,
+                            self.__generate_unique_slug())
+            except self.__class__.DoesNotExist:
+                pass
+        elif not getattr(self, self.__slug_field_name):
+            setattr(self, self.__slug_field_name,
+                    self.__generate_unique_slug())
+        super().save(*args, **kwargs)
+
+class Category(SlugByNameMixin, models.Model):
     """
     Product's category model
     """
     name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200)
+    slug = models.SlugField(max_length=200,
+                            unique=True)
 
     class Meta:
         verbose_name = 'category'
@@ -21,7 +81,7 @@ class Category(models.Model):
         return reverse('shop:product_list_by_category',
                        args=[self.slug])
 
-class Product(models.Model):
+class Product(SlugByNameMixin, models.Model):
     """
     Product model
     if available = False, item not selling

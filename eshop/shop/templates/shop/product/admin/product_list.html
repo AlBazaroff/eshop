@@ -30,9 +30,9 @@
                 <table class="table table-hover w-100 border-top">
                     <thead class="text-center">
                         <th>Name</th>
-                        <th>Price</th>
-                        <th>Available</th>
                         <th>Date</th>
+                        <th>Available</th>
+                        <th>Price</th>
                         <th>Actions</th>
                     </thead>
                     <tbody class="text-center">
@@ -45,23 +45,22 @@
                                 </a>
                             </td>
                             <td>
+                                {{ product.updated }}
+                            </td>
+                            <td>
                                 <input class="form-check-input bg-success"
                                 type="checkbox" id="available"
                                 {% if product.available  %}checked{% endif %} disabled>
-                            </td>
-                            <td>
-                                {{ product.updated }}
                             </td>
                             <td class="fw-bold">
                                 ${{ product.price }}
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    <form action="{% url 'shop:product_update' product.id %}">
-                                        {% csrf_token %}
-                                        <input type="submit" value="Update"
-                                        class="btn btn-primary me-2 rounded">
-                                    </form>
+                                    <a href="{% url 'shop:product_update' product.id %}"
+                                    class="btn btn-primary me-2 rounded">
+                                        Update
+                                    </a>
                                     <form action="{% url 'shop:product_remove' product.id %}"
                                     method="post">
                                         <input type="submit" value="Remove"
