@@ -6,13 +6,21 @@
 
 {% block content %}
     <div class="container-fluid">
-
-            <h1 class="my-3 text-center">Product list</h1>
+        <div class="row my-3">
+            <div class="col-1 fs-2">
+                <a href="{% url 'account:admin_menu' %}" style="color: inherit">
+                    <i class="bi bi-arrow-left-circle"></i>
+                </a>
+            </div>
+            <div class="col-10">
+                <h1 class="text-center">Product list</h1>
+            </div>
             <div class="text-end py-2 pe-4">
                 <a class="btn btn-success" href="{% url 'shop:product_add' %}">
                     Add product
                 </a>
             </div>
+        </div>
         <div class="row">
             <div class="col-2"></div>
             <div class="col">
@@ -76,6 +84,6 @@
         </div>
     </div>
     <script>
-        // Add search func
+        // Add search func, when start to develop admin panel
     </script>
 {% endblock %}

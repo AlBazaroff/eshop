@@ -99,6 +99,7 @@ def category_add(request):
                                  'error': 'Category name already exists'})
         category = Category.objects.create(name=name)
         return JsonResponse({'success': True,
+                             'category_id': category.pk,
                              'category_name': category.name})
     except Exception as e:
         return JsonResponse({'success': False,

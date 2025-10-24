@@ -3,6 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, \
                                       PasswordResetForm, PasswordChangeForm
 from django.contrib.auth import get_user_model
 from .models import User, Profile
+from utils.forms_utils import FormControlMixin
 
 class PhoneInput(forms.TextInput):
     """
@@ -31,20 +32,6 @@ class PostalCodeInput(forms.TextInput):
         if attrs:
             default_attrs.update(attrs)
         super().__init__(attrs=default_attrs)
-
-class FormControlMixin:
-    """
-    Mixin for set up form elements
-    and add classes for bootstrap
-    Args:
-        ph: add placeholder if ph = True
-    """
-    def __init__(self, *args, ph = True, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
-            if ph:
-                field.widget.attrs['placeholder'] = f'Enter your {field.label.lower()}'
 
 class EmailAuthenticationForm(FormControlMixin, AuthenticationForm):
     """

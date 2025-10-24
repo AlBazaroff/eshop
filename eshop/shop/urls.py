@@ -23,4 +23,7 @@ urlpatterns = [
           name='product_update'),
      path('product/remove/<int:product_id>/', views.product_remove,
           name='product_remove'),
+     # category add
+     path('category/add', views.category_add,
+          name='category_add'),
 ]
