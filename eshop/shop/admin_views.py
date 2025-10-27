@@ -2,6 +2,7 @@
 """
 Views for seller functionality in shop
 """
+from django.db.models import Count, Case, When
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
@@ -90,7 +91,12 @@ def admin_category_list(request):
     """
     View for listing categories in admin panel
     """
-    categories = Category.objects.all()
+    # get categories with fields: total_products and available_products
+    categories = Category.objects.values('id', 'name').\
+        annotate(total_products = Count('products__id'),
+                 available_products = Count(
+                     Case(When(products__available=True, then=1))
+                 ))
     paginator = Paginator(categories, 30)
     page_num = request.GET.get('page')
     categories = paginator.get_page(page_num)
@@ -104,25 +110,20 @@ def category_add(request):
     """
     Add new category
     """
-    name = request.POST.get('name', '').strip()
-    if not name:
-        return JsonResponse({'success': False,
-                             'error': 'Category name is required'})
-    try:
-        # Check if category already exist
-        if Category.objects.filter(name=name).exists():
-            return JsonResponse({'success': False,
-                                 'error': 'Category name already exists'},
-                                 status=409)
-        category = Category.objects.create(name=name)
-        return JsonResponse({'success': True,
-                             'category_id': category.pk,
-                             'category_name': category.name},
-                             status=201)
-    except Exception as e:
-        return JsonResponse({'success': False,
-                             'error': str(e)},
-                             status=400)
+    if request.method == "POST":
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            category = form.save()
+            return JsonResponse({'success': True,
+                                 'category_id': category.pk,
+                                 'category_name': category.name},
+                                 status=201)
+        return JsonResponse({"success": False,
+                             "error": form.errors['name'].as_text().strip('* ')},
+                             status=404)
+    else:
+        return JsonResponse({"success": False, "error": "Invalid request method"},
+                            status=405)
 
 @staff_member_required
 def category_update(request, category_id):

@@ -12,9 +12,11 @@
 
 {% block content %}
 <div class="container-fluid pb-5">
-  <div class="row py-5">
+  
+  {# Header section #}
+  <div class="row py-5 align-items-center">
     <div class="col-1 fs-2">
-      <a href="{% url 'shop:admin_product_list' %}" style="color: inherit">
+      <a href="{% url 'shop:admin_product_list' %}" class="text-dark">
         <i class="bi bi-arrow-left-circle"></i>
       </a>
     </div>
@@ -28,96 +30,96 @@
       </h2>
     </div>
   </div>
+
+  {# Main content section #}
   <div class="container">
     <div class="row">
-      <div class="col">
-        <form class="p-2" method="post" enctype="multipart/form-data">
+      <div class="col-md-7">
+
+        {# Product form #}
+        <form method="post" enctype="multipart/form-data" class="p-3 border rounded shadow-sm bg-white">
           {% csrf_token %}
-          <div class="row mb-3">
-            <label for="id_name" class="col-sm-2 col-form-label">
-              {{ form.name.label }}:
-            </label>
-            <div class="col-sm-10">{{ form.name }}</div>
+
+          {# Name field #}
+          <div class="mb-3 row">
+            <label for="id_name" class="col-sm-3 col-form-label">{{ form.name.label }}:</label>
+            <div class="col-sm-9">{{ form.name }}</div>
           </div>
-          <div class="row mb-3">
-            <label for="id_description" class="col-sm-2">
-              {{ form.description.label }}:
-            </label>
-            <div class="col-sm-10">{{ form.description }}</div>
+
+          {# Description field #}
+          <div class="mb-3 row">
+            <label for="id_description" class="col-sm-3 col-form-label">{{ form.description.label }}:</label>
+            <div class="col-sm-9">{{ form.description }}</div>
           </div>
-          <div class="row mb-3">
-            <label for="id_category" class="col-sm-2">
-              {{ form.category.label }}:
-            </label>
+
+          {# Category field with Add/Edit buttons #}
+          <div class="mb-3 row align-items-center">
+            <label for="id_category" class="col-sm-3 col-form-label">{{ form.category.label }}:</label>
             <div class="col-sm-5">{{ form.category }}</div>
-            <div class="col-sm fs-5">
-              <!-- Add -->
-              <button
-                type="button"
-                class="btn btn-outline-success rounded-pill"
-                data-bs-toggle="modal"
-                data-bs-target="#categoryModal"
-                id="btnAddCategory">
+            <div class="col-sm d-flex gap-2">
+              <button type="button" class="btn btn-outline-success rounded-pill" 
+                      data-bs-toggle="modal" data-bs-target="#categoryModal" id="btnAddCategory">
                 <i class="bi bi-plus"></i>
               </button>
-              <!-- Edit -->
-              <button
-                type="button"
-                class="btn btn-outline-secondary rounded-pill"
-                id="btnEditCategory">
+              <button type="button" class="btn btn-outline-secondary rounded-pill" id="btnEditCategory">
                 <i class="bi bi-pencil"></i>
               </button>
             </div>
           </div>
-          <div class="row mb-3">
-            <label for="id_image" class="col-sm-2">
-              {{ form.image.label }}:
-            </label>
+
+          {# Image field with preview #}
+          <div class="mb-3 row">
+            <label for="id_image" class="col-sm-3 col-form-label">{{ form.image.label }}:</label>
             <div class="col-sm-5">
-              {% if product %}
-              <div class="py-3">
-                {% thumbnail form.image.value 150x150 as im %}
-                <img src="{{ im.url }}" />
-              </div>
-              <input type="file" name="image" class="form-control" id="id_image"
-              {% if form.image.value %}value="{{ form.image.value }}"{% endif %}
-              />
+              {% if product and form.image.value %}
+                <div class="py-3">
+                  {% thumbnail form.image.value 150x150 as im %}
+                  <img src="{{ im.url }}" />
+                </div>
+                <input type="file" name="image" class="form-control" id="id_image"
+                {% if form.image.value %}value="{{ form.image.value }}"{% endif %}
+                />
               {% else %}
                 {{ form.image }}
               {% endif %}
             </div>
           </div>
-          <div class="row mb-3">
-            <label for="id_available" class="col-sm-2">
-              {{ form.available.label }}:
-            </label>
-            <div class="col-sm-10">{{ form.available }}</div>
+
+          {# Available checkbox #}
+          <div class="mb-3 row">
+            <label for="id_available" class="col-sm-3 col-form-label">{{ form.available.label }}:</label>
+            <div class="col-sm-9 d-flex align-items-center">{{ form.available }}</div>
           </div>
-          <div class="row mb-3">
-            <label for="id_price" class="col-sm-2">
-              {{ form.price.label }}:
-            </label>
+
+          {# Price field #}
+          <div class="mb-3 row">
+            <label for="id_price" class="col-sm-3 col-form-label">{{ form.price.label }}:</label>
             <div class="col-sm-2">{{ form.price }}</div>
           </div>
+
+          {# Submit button #}
           <div class="text-end">
             <input type="submit" value="Accept" class="btn btn-success" />
           </div>
         </form>
+
       </div>
-      <div class="col">
-        <!-- Change content -->
+
+      {# Right column (reserved for future content) #}
+      <div class="col-md-5">
+        {# Reserved for additional info or preview #}
       </div>
     </div>
+
+    {# Include category modal #}
     {% include 'shop/product/admin/category_modal.html' %}
   </div>
 </div>
-<script>
-  
-</script>
 {% endblock %}
 
 {% block domready %}
+  // Load category modal JS dynamically
   const category_change = document.createElement('script');
-  category_change.src = "{% static 'js/shop/category_modal.js' %}";
+  category_change.src = "{% static 'js/shop/product_modal.js' %}";
   document.body.appendChild(category_change);
 {% endblock %}

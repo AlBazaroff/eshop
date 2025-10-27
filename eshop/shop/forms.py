@@ -1,6 +1,7 @@
 from django import forms
 
 from .models import Product, Category
+from django.core.exceptions import ValidationError
 from utils.forms_utils import FormControlMixin
 
 class ProductForm(FormControlMixin, forms.ModelForm):
@@ -24,6 +25,26 @@ class CategoryForm(FormControlMixin, forms.ModelForm):
     class Meta:
         model = Category
         fields = ['name']
+        
+    def clean_name(self):
+        """
+        Validate name for unique
+        """
+        name = self.cleaned_data['name']
+        print(f"DEBUG: clean_name called with: '{name}'")
+        if name:
+            queryset = Category.objects.filter(name__iexact=name)
+            print(f"DEBUG: Found {queryset.count()} existing categories")
+            if self.instance and self.instance.pk:
+                print(f"DEBUG: Editing existing instance with pk: {self.instance.pk}")
+                queryset = queryset.exclude(pk=self.instance.pk)
+            # check unique
+            if queryset.exists():
+                print("DEBUG: Validation error raised") 
+                raise ValidationError('Category with that name '\
+                                        'already exists')
+        return name
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
