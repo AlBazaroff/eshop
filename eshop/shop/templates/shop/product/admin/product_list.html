@@ -69,9 +69,11 @@
                                     class="btn btn-primary me-2 rounded">
                                         Update
                                     </a>
-                                    <form action="{% url 'shop:product_remove' product.id %}"
-                                    method="post">
-                                        <input type="submit" value="Remove"
+                                    <form action="{% url 'shop:product_delete' product.id %}"
+                                    method="post"
+                                    onsubmit="return confirm('Are you sure you want to delete product: {{ product.name|truncatewords:1 }}?');">
+                                        {% csrf_token %}
+                                        <input type="submit" value="Delete"
                                         class="btn btn-danger rounded"/>
                                     </form>
                                 </div>
@@ -83,7 +85,8 @@
             </div>
         </div>
     </div>
-    <script>
-        // Add search func, when start to develop admin panel
-    </script>
+    {% block domready %}
+        // Add search func to script
+        // when start to develop admin panel
+    {% endblock %}
 {% endblock %}

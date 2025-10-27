@@ -24,3 +24,8 @@ class CategoryForm(FormControlMixin, forms.ModelForm):
     class Meta:
         model = Category
         fields = ['name']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # for inner forms
+        self.fields['name'].widget.attrs['id'] = 'id_category_name'

@@ -92,7 +92,8 @@
         </p>
       </div>
     </footer>
-
+    
+    <script src="//cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
     <script>
       // event to start searching in db
       const search = document.getElementById('search')
@@ -104,6 +105,12 @@
       });
       
     </script>
-
+    <script>
+      document.addEventListener('DOMContentLoaded', (event) =>{
+        // DOM-model loaded
+        {% block domready %}
+        {% endblock %}
+      })
+    </script>
   </body>
 </html>

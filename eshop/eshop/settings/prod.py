@@ -6,6 +6,10 @@ ADMINS = [
     ('Bazarov A', 'bazaroffalex@gmail.com')
 ]
 
+# Static and media settings
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # EMAIL SETTINGS
 # Add your own or import
 

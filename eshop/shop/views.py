@@ -3,8 +3,9 @@ from django.core.paginator import Paginator
 
 from .models import Category, Product
 from cart.forms import CartAddProductForm
-from .admin_views import product_update, admin_product_list, \
-                         product_add, product_remove, category_add
+from .admin_views import product_update, admin_product_list, product_add,\
+    product_delete, category_add, category_update, admin_category_list,\
+    category_delete
 
 def product_list(request, category_slug=None):
     """

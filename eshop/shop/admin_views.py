@@ -2,7 +2,7 @@
 """
 Views for seller functionality in shop
 """
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
@@ -73,20 +73,36 @@ def product_add(request):
                    'category_form': category_form})
 
 @staff_member_required
-def product_remove(request, product_id):
+def product_delete(request, product_id):
     """
     View for removing item from webserver
     """
     product = get_object_or_404(Product,
                                 pk=product_id)
-    product.delete()
+    try:
+        product.delete()
+    except Exception as e:
+        return Http404()
     return redirect('shop:admin_product_list')
+
+@staff_member_required
+def admin_category_list(request):
+    """
+    View for listing categories in admin panel
+    """
+    categories = Category.objects.all()
+    paginator = Paginator(categories, 30)
+    page_num = request.GET.get('page')
+    categories = paginator.get_page(page_num)
+    return render(request,
+                  'shop/product/admin/category_list.html',
+                  {'categories': categories})
 
 @require_POST
 @staff_member_required
 def category_add(request):
     """
-    View for add category
+    Add new category
     """
     name = request.POST.get('name', '').strip()
     if not name:
@@ -96,11 +112,49 @@ def category_add(request):
         # Check if category already exist
         if Category.objects.filter(name=name).exists():
             return JsonResponse({'success': False,
-                                 'error': 'Category name already exists'})
+                                 'error': 'Category name already exists'},
+                                 status=409)
         category = Category.objects.create(name=name)
         return JsonResponse({'success': True,
                              'category_id': category.pk,
-                             'category_name': category.name})
+                             'category_name': category.name},
+                             status=201)
     except Exception as e:
         return JsonResponse({'success': False,
-                             'error': str(e)})
+                             'error': str(e)},
+                             status=400)
+
+@staff_member_required
+def category_update(request, category_id):
+    """
+    Update category
+    """
+    category = get_object_or_404(Category, pk=category_id)
+    if request.method == "POST":
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            category = form.save()
+            return JsonResponse({
+                "success": True,
+                "category_id": category.id,
+                "category_name": category.name,
+                },
+                status=200)
+        return JsonResponse({"success": False,
+                             "error": form.errors['name'].as_text().strip('* ')},
+                            status=404)
+    else:
+        return JsonResponse({"success": False, "error": "Invalid request method"},
+                            status=405)
+    
+@staff_member_required
+def category_delete(request, category_id):
+    """
+    Delete category
+    """
+    category = get_object_or_404(Category, pk=category_id)
+    try:
+        category.delete()
+    except Exception as e:
+        return Http404(e)
+    return redirect('shop:admin_category_list')

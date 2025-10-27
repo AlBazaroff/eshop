@@ -1,4 +1,6 @@
+from unidecode import unidecode
 from django.db import models
+from django.core.validators import RegexValidator
 from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.contenttypes.models import ContentType
@@ -27,7 +29,7 @@ class SlugByNameMixin:
         """
         Generate unique slug for each item
         """
-        slug_value = getattr(self, self.__slug_from_field)
+        slug_value = unidecode(getattr(self, self.__slug_from_field))
         slug = slugify(slug_value)
         num = 1
         model_class = self.__class__
@@ -66,10 +68,8 @@ class Category(SlugByNameMixin, models.Model):
     """
     Product's category model
     """
-    name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200,
-                            unique=True)
-
+    name = models.CharField(max_length=200, unique=True)
+    slug = models.SlugField(max_length=200, unique=True)
     class Meta:
         verbose_name = 'category'
         verbose_name_plural = 'categories'

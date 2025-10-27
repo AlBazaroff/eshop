@@ -1,5 +1,6 @@
 {% extends 'shop/base.html' %}
 {% load thumbnail %}
+{% load static %}
 
 {% block title %}
     {% if product %}
@@ -28,174 +29,95 @@
     </div>
   </div>
   <div class="container">
-    <form class="p-2 w-50" method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      <div class="row mb-3">
-        <label for="id_name" class="col-sm-2 col-form-label">
-          {{ form.name.label }}:
-        </label>
-        <div class="col-sm-10">{{ form.name }}</div>
-      </div>
-      <div class="row mb-3">
-        <label for="id_description" class="col-sm-2">
-          {{ form.description.label }}:
-        </label>
-        <div class="col-sm-10">{{ form.description }}</div>
-      </div>
-      <div class="row mb-3">
-        <label for="id_category" class="col-sm-2">
-          {{ form.category.label }}:
-        </label>
-        <div class="col-sm-5">{{ form.category }}</div>
-        <div class="col-sm fs-5">
-          <button
-            type="button"
-            data-bs-toggle="modal"
-            class="btn btn-outline-success rounded-pill"
-            data-bs-target="#categoryModal"
-          >
-            <i class="bi bi-plus"></i>
-          </button>
-          <button
-            type="button"
-            class="btn btn-outline-secondary rounded-pill"
-            class="btn btn-outline-success rounded-pill"
-          >
-            <i class="bi bi-pencil"></i>
-          </button>
-        </div>
-      </div>
-      <div class="row mb-3">
-        <label for="id_image" class="col-sm-2"> {{ form.image.label }}: </label>
-        <div class="col-sm-5">
-          {% if product %}
-          <div class="py-3">
-            {% thumbnail form.image.value 150x150 as im %}
-            <img src="{{ im.url }}" />
+    <div class="row">
+      <div class="col">
+        <form class="p-2" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="row mb-3">
+            <label for="id_name" class="col-sm-2 col-form-label">
+              {{ form.name.label }}:
+            </label>
+            <div class="col-sm-10">{{ form.name }}</div>
           </div>
-          {% endif %}
-          <input
-            type="file"
-            name="image"
-            class="form-control"
-            id="id_image"
-            {%
-            if
-            form.image.value
-            %}value="{{ form.image.value }}"
-            {%
-            endif
-            %}
-          />
-        </div>
-      </div>
-      <div class="row mb-3">
-        <label for="id_available" class="col-sm-2">
-          {{ form.available.label }}:
-        </label>
-        <div class="col-sm-10">{{ form.available }}</div>
-      </div>
-      <div class="row mb-3">
-        <label for="id_price" class="col-sm-2"> {{ form.price.label }}: </label>
-        <div class="col-sm-2">{{ form.price }}</div>
-      </div>
-      <div class="text-end">
-        <input type="submit" value="Accept" class="btn btn-success" />
-      </div>
-    </form>
-    <div class="modal fade" id="categoryModal" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content position-relative">
-          <div class="modal-header">
-            <h5 class="modal-title">Add category</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+          <div class="row mb-3">
+            <label for="id_description" class="col-sm-2">
+              {{ form.description.label }}:
+            </label>
+            <div class="col-sm-10">{{ form.description }}</div>
           </div>
-          <form
-            method="POST"
-            id="add_category"
-            action="{% url 'shop:category_add'}"
-          >
-            <div class="modal-body">
-              <div id="alertMessages"></div>
-              {% csrf_token %} {{ category_form.as_p }}
-            </div>
-            <div class="modal-footer">
+          <div class="row mb-3">
+            <label for="id_category" class="col-sm-2">
+              {{ form.category.label }}:
+            </label>
+            <div class="col-sm-5">{{ form.category }}</div>
+            <div class="col-sm fs-5">
+              <!-- Add -->
               <button
                 type="button"
-                data-bs-dismiss="modal"
-                class="btn btn-secondary"
-                id="modal_close"
-              >
-                Cancel
+                class="btn btn-outline-success rounded-pill"
+                data-bs-toggle="modal"
+                data-bs-target="#categoryModal"
+                id="btnAddCategory">
+                <i class="bi bi-plus"></i>
               </button>
-              <button type="submit" class="btn btn-success">
-                Add category
+              <!-- Edit -->
+              <button
+                type="button"
+                class="btn btn-outline-secondary rounded-pill"
+                id="btnEditCategory">
+                <i class="bi bi-pencil"></i>
               </button>
             </div>
-          </form>
-        </div>
+          </div>
+          <div class="row mb-3">
+            <label for="id_image" class="col-sm-2">
+              {{ form.image.label }}:
+            </label>
+            <div class="col-sm-5">
+              {% if product %}
+              <div class="py-3">
+                {% thumbnail form.image.value 150x150 as im %}
+                <img src="{{ im.url }}" />
+              </div>
+              <input type="file" name="image" class="form-control" id="id_image"
+              {% if form.image.value %}value="{{ form.image.value }}"{% endif %}
+              />
+              {% else %}
+                {{ form.image }}
+              {% endif %}
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="id_available" class="col-sm-2">
+              {{ form.available.label }}:
+            </label>
+            <div class="col-sm-10">{{ form.available }}</div>
+          </div>
+          <div class="row mb-3">
+            <label for="id_price" class="col-sm-2">
+              {{ form.price.label }}:
+            </label>
+            <div class="col-sm-2">{{ form.price }}</div>
+          </div>
+          <div class="text-end">
+            <input type="submit" value="Accept" class="btn btn-success" />
+          </div>
+        </form>
+      </div>
+      <div class="col">
+        <!-- Change content -->
       </div>
     </div>
+    {% include 'shop/product/admin/category_modal.html' %}
   </div>
 </div>
 <script>
-  const category_selector = document.getElementById("id_category");
-  const categoryForm = document.getElementById("add_category");
-  const categoryModal = new bootstrap.Modal("#categoryModal");
-  const alertMessages = document.getElementById("alertMessages");
-  categoryForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const formData = new FormData(categoryForm);
-    fetch("/category/add", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Add error: " + response.statusText);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        alertMessages.innerHTML = "";
-
-        if (data.success) {
-        //   Successfully add
-          let new_op = document.createElement("option");
-          new_op.value = data.category_id;
-          new_op.innerHTML = data.category_name;
-          category_selector.appendChild(new_op);
-          // set to null
-          categ_name = document.getElementById('id_category_name');
-          categ_name.value = '';
-          // Close only after success
-          categoryModal.hide();
-          console.log("Category added successfully:", data);
-        } else {
-          // Error - show msg, but don't close modal window
-          var msg = document.createElement("div");
-          msg.classList.add("alert", "alert-danger");
-          msg.innerHTML = data.error;
-          alertMessages.appendChild(msg);
-        }
-      })
-      .catch((error) => {
-        // Clean messages
-        alertMessages.innerHTML = "";
-
-        // Show new message about error
-        var msg = document.createElement("div");
-        msg.classList.add("alert", "alert-danger");
-        msg.innerHTML =
-          error.message || "Error when you add category";
-        alertMessages.appendChild(msg);
-        console.log("Fetch error:", error);
-      });
-  });
+  
 </script>
+{% endblock %}
+
+{% block domready %}
+  const category_change = document.createElement('script');
+  category_change.src = "{% static 'js/shop/category_modal.js' %}";
+  document.body.appendChild(category_change);
 {% endblock %}
