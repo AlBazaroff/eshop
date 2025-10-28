@@ -3,7 +3,7 @@ LABEL maintainer="bazaroffalex@gmail.com"
 
 # set variables of environment
 ENV PYTHONDONTWRITEBYTECODE=1
-# ENV PYTHONUNBUFFERED=1
+ENV PYTHONUNBUFFERED=1
 
 # WORK DIRECTORY
 WORKDIR /code
