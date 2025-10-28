@@ -2,6 +2,7 @@ __pycache__/
 env/
 data/
 staticfiles/
+fixtures/
 migrations/
 media/
 .DS_Store

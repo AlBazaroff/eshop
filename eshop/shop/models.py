@@ -1,10 +1,11 @@
 from unidecode import unidecode
 from django.db import models
-from django.core.validators import RegexValidator
 from django.urls import reverse
 from django.utils.text import slugify
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+
+from .fields import OrderField
 
 class SlugByNameMixin:
     """
@@ -139,11 +140,13 @@ class ProductContent(models.Model):
                                      )
     object_id = models.PositiveBigIntegerField()
     item = GenericForeignKey('content_type', 'object_id')
+    order = OrderField(blank=True, for_fields=['product'])
 
     class Meta:
         indexes = [
             models.Index(fields=['content_type', 'object_id']),
         ]
+        ordering = ['order']
 
 # Models for content based on DescriptionBase 
 # return after create admin page for products
