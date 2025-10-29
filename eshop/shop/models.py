@@ -133,20 +133,26 @@ class ProductContent(models.Model):
     content_type = models.ForeignKey(ContentType,
                                      on_delete=models.CASCADE,
                                      limit_choices_to={'model__in':(
-                                         'text',
+                                        #  'text',
                                          'image',
                                          'video'
                                      )}
                                      )
     object_id = models.PositiveBigIntegerField()
     item = GenericForeignKey('content_type', 'object_id')
-    order = OrderField(blank=True, for_fields=['product'])
+
+    def delete(self, *args, **kwargs):
+        """
+        Remove related object if exist
+        """
+        if self.item:
+            self.item.delete()
+        super().delete(*args, **kwargs)
 
     class Meta:
         indexes = [
             models.Index(fields=['content_type', 'object_id']),
         ]
-        ordering = ['order']
 
 # Models for content based on DescriptionBase 
 # return after create admin page for products
@@ -160,20 +166,20 @@ class DescriptionBase(models.Model):
     class Meta:
         abstract = True
 
-class Text(DescriptionBase):
-    """
-    Text content model
-    """
-    content = models.TextField()
+# class Text(DescriptionBase):
+#     """
+#     Text content model
+#     """
+#     content = models.TextField()
 
 class Image(DescriptionBase):
     """
     Image content
     """
-    file = models.ImageField(upload_to='products/%Y/%m/%d')
+    content = models.ImageField(upload_to='products/%Y/%m/%d')
 
 class Video(DescriptionBase):
     """
     Video content
     """
-    file = models.FileField(upload_to='files/')
+    content = models.URLField()

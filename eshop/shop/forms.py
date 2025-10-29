@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Product, Category
+from .models import Product, Category, Image, Video
 from django.core.exceptions import ValidationError
 from utils.forms_utils import FormControlMixin
 
@@ -50,3 +50,19 @@ class CategoryForm(FormControlMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         # for inner forms
         self.fields['name'].widget.attrs['id'] = 'id_category_name'
+
+class ImageForm(forms.ModelForm):
+    """
+    Form for Image model
+    """
+    class Meta:
+        model = Image
+        fields = ['content']
+
+class VideoForm(forms.ModelForm):
+    """
+    Form for video model
+    """
+    class Meta:
+        model = Video
+        fields = ['content']

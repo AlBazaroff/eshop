@@ -105,34 +105,33 @@
 
       </div>
 
-      {# Right column (reserved for future content) #}
+      {# Product content #}
       <div class="col-md-6">
-        <h5>Product Content</h5>
-
-        <div id="textContent">
-          {% for pc in text_content %}
-            <div class="card mb-2" data-content-id="{{ pc.id }}">
-              <div class="card-body d-flex justify-content-between align-items-center">
-                <span>{{ pc.item.content|truncatewords:20 }}</span>
-                <div class="d-flex gap-1">
-                  <button class="btn btn-sm btn-outline-secondary btn-move-up">↑</button>
-                  <button class="btn btn-sm btn-outline-secondary btn-move-down">↓</button>
-                  <button class="btn btn-sm btn-outline-danger btn-delete">✕</button>
-                </div>
-              </div>
-            </div>
-          {% empty %}
-            <p>No text content yet</p>
-          {% endfor %}
-          <button id="btnAddTextContent" class="btn btn-outline-success mt-2">Add Text</button>
-        </div>
+        <h5>Product Content
+          <button type="button" class="btn btn-sm btn-outline-success ms-3" id="btnAddContent"
+                  data-add-url="{% url 'shop:product_content_add' product.id %}"
+                  data-delete-base="{% url 'shop:product_content_delete' 0 %}"
+                  data-bs-toggle="modal" data-bs-target="#contentModal">
+            <i class="bi bi-plus"></i> Add
+          </button>
+        </h5>
 
         <div id="imageContent" class="mt-4">
           <h6>Images</h6>
-          <div class="d-flex flex-wrap gap-2">
-            {% for pc in image_content %}
-              {% thumbnail pc.item.file 100x100 as im %}
-                <img src="{{ im.url }}" class="img-thumbnail" />
+          <div id="imageItems" class="d-flex flex-wrap gap-2">
+            {% for entry in images %}
+              {% with item=entry.item pc_id=entry.pc_id %}
+                <div class="position-relative content-item"
+                data-content-id="{{ pc_id }}">
+                  {% thumbnail item.content 100x100 as im %}
+                  <img src="{{ im.url }}" class="img-thumbnail" />
+                  <button type="button" data-content-id="{{ pc_id }}"
+                  class="btn btn-sm btn-outline-danger position-absolute
+                  top-0 end-0 btn-delete-content">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+              {% endwith %}
             {% empty %}
               <p>No additional images yet</p>
             {% endfor %}
@@ -141,19 +140,38 @@
 
         <div id="videoContent" class="mt-4">
           <h6>Videos</h6>
-          {% for pc in video_content %}
-            <video width="150" controls>
-              <source src="{{ pc.item.file.url }}" type="video/mp4">
-            </video>
-          {% empty %}
-            <p>No videos yet</p>
-          {% endfor %}
+          <div id="videoItems">
+            {% for entry in videos %}
+              {% with item=entry.item pc_id=entry.pc_id %}
+                <div class="content-item mb-3" data-content-id="{{ pc_id }}">
+                  <div class="ratio ratio-16x9">
+                    <iframe width="420" height="315"
+                    src="{{ item.content }}"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                    </iframe>
+                  </div>
+                  <button type="button" data-content-id="{{ pc_id }}"
+                  class="btn btn-sm btn-outline-danger mt-2 btn-delete-content">
+                    Delete
+                  </button>
+                </div>
+              {% endwith %}
+            {% empty %}
+              <p>No videos yet</p>
+            {% endfor %}
+          </div>
         </div>
       </div>
     </div>
 
     {# Include category modal #}
     {% include 'shop/product/admin/category_modal.html' %}
+
+    {# Content modal (inline implementation to ensure it's available) #}
+    {% include 'shop/product/admin/content_modal.html' %}
+
   </div>
 </div>
 {% endblock %}
@@ -163,4 +181,8 @@
   const category_change = document.createElement('script');
   category_change.src = "{% static 'js/shop/product_modal.js' %}";
   document.body.appendChild(category_change);
+  
+  const content_change = document.createElement('script');
+  content_change.src = "{% static 'js/shop/product_content_admin.js' %}";
+  document.body.appendChild(content_change);
 {% endblock %}

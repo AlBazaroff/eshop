@@ -32,4 +32,9 @@ urlpatterns = [
           name='category_update'),
      path('admin/category/delete/<int:category_id>/', views.category_delete,
           name='category_delete'),
+     # Product content
+     path('admin/product/content/add/<int:product_id>/',
+          views.product_content_add, name='product_content_add'),
+     path('admin/product/content/delete/<int:content_id>/',
+          views.product_content_delete, name='product_content_delete'),
 ]

@@ -2,16 +2,26 @@
 """
 Views for seller functionality in shop
 """
+from django.utils import timezone
 from django.db.models import Count, Case, When
+from django.forms.models import model_to_dict
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.contenttypes.models import ContentType
 from django.views.decorators.http import require_POST
 
-from .models import Product, Category
-from .forms import ProductForm, CategoryForm
+from easy_thumbnails.files import get_thumbnailer
+
+from .models import Product, Category, ProductContent, Video, Image
+from .forms import ProductForm, CategoryForm, VideoForm, ImageForm
+
+CONTENT_FORM_MAP = {
+    'image': ImageForm,
+    'video': VideoForm,
+}
 
 @staff_member_required
 def admin_product_list(request):
@@ -19,7 +29,7 @@ def admin_product_list(request):
     Admin product list view in the admin panel
     to add, update, remove products on pages
     """
-    products = Product.objects.all()
+    products = Product.objects.all().order_by('-updated')
     paginator = Paginator(products, 30)
     page_num = request.GET.get('page')
     products = paginator.get_page(page_num)
@@ -34,7 +44,12 @@ def product_update(request, product_id):
     Args:
         product_id: product_id of product for updating
     """
-    product = get_object_or_404(Product, id=product_id)
+    # get product with related content(ProductContent)
+    try:
+        product = Product.objects.prefetch_related('content').\
+            get(pk=product_id)
+    except Product.DoesNotExist:
+        return Http404('Product not found')
     category_form = CategoryForm()
     if request.method == 'POST':
         product_form = ProductForm(request.POST, request.FILES, instance=product)
@@ -46,11 +61,34 @@ def product_update(request, product_id):
             return redirect('shop:admin_product_list')
     else:
         product_form = ProductForm(instance=product)
+    # select related content
+    image_content = product.content.filter(content_type__model='image')
+    video_content = product.content.filter(content_type__model='video')
+    # get actual video and image objects
+    # prevent N+1 queries
+    videos = Video.objects.filter(id__in=video_content.values('object_id'))
+    images = Image.objects.filter(id__in=image_content.values('object_id'))
+
+    # build mapping from object id -> ProductContent id
+    # so template can use PC id for deletes
+    image_pc_map = {pc.object_id: pc.pk for pc in image_content}
+    video_pc_map = {pc.object_id: pc.pk for pc in video_content}
+
+    images_with_pc = []
+    for it in images:
+        images_with_pc.append({'pc_id': image_pc_map.get(it.id), 'item': it})
+
+    videos_with_pc = []
+    for it in videos:
+        videos_with_pc.append({'pc_id': video_pc_map.get(it.id), 'item': it})
+
     return render(request,
                   'shop/product/admin/edit_product.html',
                   {'product': product,
                    'form': product_form,
-                   'category_form': category_form})
+                   'category_form': category_form,
+                   'videos': videos_with_pc,
+                   'images': images_with_pc})
 
 @staff_member_required
 def product_add(request):
@@ -159,3 +197,63 @@ def category_delete(request, category_id):
     except Exception as e:
         return Http404(e)
     return redirect('shop:admin_category_list')
+
+@require_POST
+@staff_member_required
+def product_content_add(request, product_id):
+    """
+    Add content (image or video) to product
+    """
+    product = get_object_or_404(Product, pk=product_id)
+    content_type = request.POST.get('type')
+    FormClass = CONTENT_FORM_MAP.get(content_type)
+    if not FormClass:
+        return JsonResponse({'error': 'Invalid content type'}, status=400)
+
+    # pass both POST and FILES (images require FILES)
+    form = FormClass(request.POST, request.FILES)
+    if form.is_valid():
+        item = form.save()
+        pc = ProductContent.objects.create(
+            product=product,
+            content_type=ContentType.objects.get_for_model(item),
+            object_id=item.id,
+        )
+        product.updated = timezone.now()
+        product.save(update_fields=['updated'])
+
+        # prepare content value (for image return URL if available)
+        content_value = None
+        try:
+            # ImageField has .url
+            content_value = item.content.url
+        except Exception:
+            content_value = getattr(item, 'content', '')
+        if content_type == 'image':
+            # generate thumbnail URL
+            thumbnailer = get_thumbnailer(item.content)
+            thumb_options = {'size': (100, 100)}
+            thumb = thumbnailer.get_thumbnail(thumb_options)
+            content_value = thumb.url
+        return JsonResponse({'success': True,
+                             'new_item': {
+                                 'id': item.id,
+                                 'content': content_value
+                                 },
+                             'content_id': pc.pk
+                             },
+                             status=201)
+    return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+
+@require_POST
+@staff_member_required
+def product_content_delete(request, content_id):
+    """
+    Delete content (image or video) from product
+    """
+    content = get_object_or_404(ProductContent, pk=content_id)
+    try:
+        content.delete()
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+    return JsonResponse({'success': True})

@@ -1,10 +1,14 @@
+"""
+Field for order items
+Maybe remove later
+"""
 from typing import Optional, Any
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist
 
 class OrderField(models.PositiveIntegerField):
     """
-    Field for order descriptions
+    Field for order items
     """
     def __init__(self, for_fields: Optional[list] = None, *args, **kwargs):
         self.for_fields = for_fields # list
