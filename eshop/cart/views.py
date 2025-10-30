@@ -8,7 +8,10 @@ from .cart import Cart
 @require_POST
 def add_cart(request, product_id):
     """
-    Add product to cart
+    Add or change amount items in cart
+    Args:
+        request: HTTP-request
+        product_id: id of product
     """
     cart = Cart(request)
     product = get_object_or_404(Product,
@@ -24,7 +27,7 @@ def add_cart(request, product_id):
 @require_POST
 def remove_cart(request, product_id):
     """
-    Remove product from cart
+    Remove item from cart
     """
     cart = Cart(request)
     product = get_object_or_404(Product,
@@ -35,7 +38,7 @@ def remove_cart(request, product_id):
 @require_POST
 def clear_cart(request):
     """
-    Clear all from cart
+    Clear cart from all items
     """
     cart = Cart(request)
     cart.clear()
@@ -44,6 +47,7 @@ def clear_cart(request):
 def cart_detail(request):
     """
     Cart's detail
+    For every item add form for update
     """
     cart = Cart(request)
     for item in cart:

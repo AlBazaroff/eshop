@@ -1,5 +1,4 @@
 {% extends 'shop/base.html' %}
-{% load thumbnail %}
 
 {% block title %}
     {% if category %}{{ category.name }}{% else %}Products{% endif %}
@@ -41,30 +40,7 @@
     </div>
 
     <div class="col" id="product-list">
-      <table class="table-light w-100">
-          <tbody>
-              {% for product in products %}
-                  <tr class="border-bottom">
-                      <td class="text-center">
-                          <a href="{{ product.get_absolute_url }}">
-                              {% thumbnail product.image '150x150' as im %}
-                              <img src="{{ im.url }}">
-                          </a>
-                      </td>
-                      <td class="align-top pt-5 ps-5">
-                          <a href="{{ product.get_absolute_url }}">
-                            {{ product.name }}
-                          </a>
-                      </td>
-                      <td class="align-top pt-5 text-center"
-                      style="min-width: 130px;">
-                          ${{ product.price }}
-                      </td>
-                  </tr>
-              {% endfor %}
-          </tbody>
-      </table>
-      {% include 'shop/product/pagination.html' with page=products %}
+      {% include 'shop/product/list.html' %}
     </div>
   </div>
 </div>

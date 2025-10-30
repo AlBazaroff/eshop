@@ -2,6 +2,7 @@ __pycache__/
 env/
 data/
 staticfiles/
+fixtures/
 migrations/
 media/
 .DS_Store
@@ -21,3 +22,4 @@ celery.log
 *.celeryconfig
 celeryconfig.py
 
+search_requests.sh

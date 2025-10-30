@@ -1,0 +1,37 @@
+<div class="modal fade" id="categoryModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content position-relative">
+      <div class="modal-header">
+        <h5 class="modal-title">Add category</h5>
+        <button type="button" class="btn-close"
+          data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <form method="POST" id="add_category" action="{% url 'shop:category_add' %}">
+        <div class="modal-body">
+          {# Hidden ID for editing #}
+          <input type="hidden" id="id_category_id" name="category_id" value="" />
+          
+          <div id="alertMessages"></div>
+          {% csrf_token %}
+
+          {# Explicit form fields instead of form.as_p for control over IDs #}
+          <div class="mb-3">
+            <label for="id_category_name" class="form-label">Category name:</label>
+            <input type="text" name="name" class="form-control"
+            id="id_category_name" required placeholder="Enter category name" />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="modal_close">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-success" id="category_btn">
+            Add category
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

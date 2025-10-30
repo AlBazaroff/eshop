@@ -28,6 +28,7 @@
           </a>
         </div>
         <div class="col">
+          <input type="text" placeholder="Search" class="form-control" id="search"/>
         </div>
         <div class="col-3 text-end">
           <div class="btn-group">
@@ -50,15 +51,24 @@
                      Edit profile
                     </a>
                   </li>
+                  {% if user.is_staff %}
+                    <li>
+                      <a href="{% url 'account:admin_menu' %}"
+                      class="dropdown-item">
+                      Admin</a>
+                    </li>
+                  {% endif %}
                   <li>
-                    <a href="{% url 'account:logout' %}" class="dropdown-item">Logout</a>
+                    <a href="{% url 'account:logout' %}" class="dropdown-item">
+                      Logout</a>
                   </li>
                 </ul>
               </div>
             {% endif %}
           </div>
           {% with cart_items=cart|length %}
-              <a href="{% url 'cart:detail' %}" class="btn btn-outline-primary position-relative me-5 ms-1">
+              <a href="{% url 'cart:detail' %}"
+              class="btn btn-outline-primary position-relative me-5 ms-1">
                 <i class="bi bi-cart"></i>
                 {% if cart_items != 0 %}
                   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-secondary">
@@ -82,5 +92,25 @@
         </p>
       </div>
     </footer>
+    
+    <script src="//cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+    <script>
+      // event to start searching in db
+      const search = document.getElementById('search')
+      search.addEventListener('keydown', function(event){
+        if (event.key === 'Enter' && this.value != ''){
+          const value = this.value;
+          window.location.href = `/search/${value}`;
+        }
+      });
+      
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', (event) =>{
+        // DOM-model loaded
+        {% block domready %}
+        {% endblock %}
+      })
+    </script>
   </body>
 </html>

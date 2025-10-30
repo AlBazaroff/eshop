@@ -24,7 +24,7 @@ INTERNAL_IPS = [
 DEBUG = True
 
 # For development, web is necessary for stripe
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'mysite.com']
 
 # for testing password reset
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

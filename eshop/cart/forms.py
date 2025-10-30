@@ -5,7 +5,8 @@ PRODUCT_QUANTITIES = [(i, str(i)) for i in range(1,11)]
 
 class CartAddProductForm(forms.Form):
     """
-    Adding product to cart form
+    Add or change items in cart
+    override used for change items if True
     """
     quantity = forms.TypedChoiceField(choices=PRODUCT_QUANTITIES,
                                      coerce=int,

@@ -10,7 +10,7 @@ services:
     volumes:
       - ./data/db:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432" # change host port for local
     environment:
       - POSTGRES_DB=eshop
       - POSTGRES_USER=shopkeeper
@@ -45,12 +45,12 @@ services:
   web:
     build: .
     command: ["python", "/code/eshop/manage.py", "runserver",
-              "0.0.0.0:8000"]
+              "0.0.0.0:80"]
     restart: always
     volumes:
       - .:/code
     ports:
-      - "8000:8000"
+      - "80:80"
     environment: *common-environment
     depends_on:
       rabbitmq:

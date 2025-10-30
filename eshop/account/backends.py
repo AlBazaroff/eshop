@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 
 class EmailBackend(ModelBackend):
     """
-    Authenticate user by email
+    Backend class for authenticate users by email
     """
     def authenticate(self, request, username=None, password=None, **kwargs):
         " authenticate user "

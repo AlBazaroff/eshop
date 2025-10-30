@@ -11,7 +11,7 @@ from shop.models import Product
 class Cart:
     def __init__(self, request):
         """
-        Initialize cart
+        Initialize cart for new session
         """
         self.session = request.session
         cart = self.session.get(settings.CART_SESSION_ID)
@@ -25,8 +25,7 @@ class Cart:
 
     def _get_products(self):
         """
-        Cache products
-        prevent double query
+        Cache products for preventing double query
         """
         if self._products is None:
             product_ids = self.cart.keys()
@@ -35,7 +34,11 @@ class Cart:
 
     def add(self, product, quantity=1, override_quantity=False):
         """
-        Add product to cart or update
+        Add or update items in cart
+        Args:
+            product: instance of product model
+            quantity: amount of item
+            override_quantity: override quantity of existing item in cart
         """
         product_id = str(product.id)
         if product_id not in self.cart:
@@ -55,13 +58,15 @@ class Cart:
         self.save()
 
     def save(self):
-        " save session "
+        """
+        save session to update cart
+        """
         # mark session as changed
         self.session.modified = True
 
     def remove(self, product):
         """
-        Remove from cart
+        Remove item from cart
         """
         product_id = str(product.id)
         if self.cart[product_id]:
@@ -71,13 +76,16 @@ class Cart:
             self.save()
 
     def clear(self):
-        " Clear cart "
+        """
+        Clear cart
+        by session
+        """
         del self.session[settings.CART_SESSION_ID]
         self.save()
 
     def total_price(self):
         """
-        Total price of product
+        Calculate total price of all items in cart
         Calc: price * quantity
         """
         return sum(Decimal(value['price']) * value['quantity']
@@ -85,7 +93,9 @@ class Cart:
 
     def __iter__(self):
         """
-        iter for items in cart 
+        Iteration of items in cart
+        create temp_cart
+        add product to temp_cart for every item
         """
         products = self._get_products()
         # save product in temp_cart
@@ -100,8 +110,7 @@ class Cart:
 
     def __len__(self):
         """
-        return total count of products
-        in the cart 
+        return total count of products in the cart 
         """
         return sum(item['quantity']
                    for item in self.cart.values())

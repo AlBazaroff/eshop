@@ -1,0 +1,116 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}
+    Category list
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    {# Header #}
+    <div class="row align-items-center my-3">
+        <div class="col-1 fs-2">
+            <a href="{% url 'account:admin_menu' %}" class="text-dark">
+                <i class="bi bi-arrow-left-circle"></i>
+            </a>
+        </div>
+        <div class="col-10">
+            <h1 class="text-center">Category list</h1>
+        </div>
+        <div class="col text-end pe-4">
+            <button class="btn btn-success" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#categoryModal" 
+                    id="btnAddCategory">
+                <i class="bi bi-plus-circle me-1"></i> Add category
+            </button>
+        </div>
+    </div>
+
+    {# Search #}
+    <div class="row mb-3">
+        <div class="col-2"></div>
+        <div class="col">
+            <input type="text" id="admin_search_category" 
+                   class="form-control" 
+                   placeholder="Search categories">
+        </div>
+    </div>
+
+    {# Main content #}
+    <div class="row">
+        <div class="col-2 bg-light p-3 rounded">
+            <h4 class="text-center mb-3">Filters</h4>
+            <div class="text-muted small text-center">(coming soon)</div>
+        </div>
+
+        <div class="col">
+            <div class="table-responsive">
+                <table class="table table-hover border-top align-middle">
+                    <thead class="text-center table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Products on sale</th>
+                            <th>Total products</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="text-center" id="categoryTable">
+                        {% for category in categories %}
+                        <tr>
+                            <td class="text-start">
+                                <a href="{{ category.get_absolute_url }}" 
+                                   class="text-decoration-none text-dark">
+                                    {{ category.name }}
+                                </a>
+                            </td>
+                            <td>{{ category.available_products|default:"0" }}</td>
+                            <td>{{ category.total_products|default:"0" }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    {# Open edit modal #}
+                                    <button type="button" 
+                                            class="btn btn-primary btn-sm rounded me-2 btn-edit-category"
+                                            data-id="{{ category.id }}"
+                                            data-name="{{ category.name }}"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#categoryModal">
+                                        <i class="bi bi-pencil"></i> Update
+                                    </button>
+
+                                    {# Delete category #}
+                                    <form action="{% url 'shop:category_delete' category.id %}" 
+                                          method="post"
+                                          onsubmit="return confirm('Are you sure you want to delete category: {{ category.name }}?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm rounded">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-muted fst-italic">No categories found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'pagination.html' with page=categories %}
+
+{# Category modal (Add/Edit) #}
+{% include 'shop/product/admin/category_modal.html' %}
+{% endblock %}
+
+{% block domready %}
+    const category_change = document.createElement('script');
+    category_change.src = "{% static 'js/shop/category_modal.js' %}";
+    document.body.appendChild(category_change);
+    // Add search functionality when developing admin panel
+{% endblock %}

@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect
-from django.http import Http404
 from django.contrib import messages
 
 from .models import OrderItem
@@ -7,28 +6,13 @@ from .forms import OrderCreateForm
 from .tasks import order_created
 from account.models import Profile
 from cart.cart import Cart
+from cart.decorators import check_cart
 
-
-def check_cart(func):
-    """
-    Decorator for checking cart
-    before redirect to create_order
-    If cart is empty return Http404
-    else return create_order
-    """
-    def wrapper(*args, **kwargs):
-        request = args[0]
-        cart = Cart(request)
-        if cart:
-            return func(*args, **kwargs)
-        else:
-            raise Http404('Your cart is empty. Add products to cart')
-    return wrapper
     
 @check_cart
 def create_order(request):
     """
-    Create order by cart
+    Create order by cart from session
     """
     cart = Cart(request)
     user = request.user

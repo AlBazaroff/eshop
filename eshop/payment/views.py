@@ -9,37 +9,45 @@ from django.conf import settings
 
 from orders.models import Order, OrderItem
 
-# stripe keys
+# stripe keys from settings
 stripe.api_key = settings.STRIPE_SECRET_KEY
 stripe.api_version = settings.STRIPE_API_VERSION
 
 def annulment(request):
     """
     Cancel payment before payment
+    initiate by cancel on the page
+    remove order_id from session
     """
     del request.session['order_id']
     return redirect('shop:product_list')
 
 def payment_canceled(request):
     """
-    Canceled payment
+    Work if stripe payment was canceled
+    remove order_id from session
     """
+    del request.session['order_id']
     return render(request, 'payment/canceled.html')
 
 def payment_completed(request):
     """
-    Completed payment
+    Work if stripe payment was successfully completed
     """
     order_id = request.session['order_id']
     order = Order.objects.get(id=order_id)
     order.paid = True
     order.save()
+    del request.session['order_id']
     return render(request, 'payment/completed.html')
 
+# the page is not cached
 @never_cache
 def payment_process(request):
     """
-    Stripe checkout process
+    Start process of payment on stripe pages
+    Started after order creation was successful
+    use order data by order_id from current session
     """
     order_id = request.session.get('order_id', None)
     order = get_object_or_404(Order,
@@ -68,11 +76,8 @@ def payment_process(request):
                     },
                 },
                 'quantity': item.quantity,
-            }
-
-            )
+            })
         # create Checkout session
-        del request.session['order_id']
         session = stripe.checkout.Session.create(**data)
         
         return redirect(session.url, code=303)

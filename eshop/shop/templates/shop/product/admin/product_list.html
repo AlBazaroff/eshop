@@ -1,0 +1,102 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Product list{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    {# Header #}
+    <div class="row align-items-center my-3">
+        <div class="col-1 fs-2">
+            <a href="{% url 'account:admin_menu' %}" class="text-dark">
+                <i class="bi bi-arrow-left-circle"></i>
+            </a>
+        </div>
+        <div class="col-10">
+            <h1 class="text-center">Product list</h1>
+        </div>
+        <div class="col text-end pe-4">
+            <a href="{% url 'shop:product_add' %}" class="btn btn-success">
+                <i class="bi bi-plus-circle me-1"></i> Add product
+            </a>
+        </div>
+    </div>
+
+    {# Search #}
+    <div class="row mb-3">
+        <div class="col-2"></div>
+        <div class="col">
+            <input type="text" id="admin_search_product" 
+                   class="form-control w-100" placeholder="Search products">
+        </div>
+    </div>
+
+    {# Main content #}
+    <div class="row">
+        {# Filters #}
+        <div class="col-2 bg-light p-3 rounded">
+            <h4 class="text-center mb-3">Filters</h4>
+            {# Future filter options here #}
+            <div class="text-muted small text-center">(coming soon)</div>
+        </div>
+
+        {# Product table #}
+        <div class="col">
+            <div class="table-responsive">
+                <table class="table table-hover border-top align-middle">
+                    <thead class="text-center table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Date</th>
+                            <th>Available</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-center" id="productTable">
+                        {% for product in products %}
+                        <tr>
+                            <td class="text-start">
+                                <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-dark">
+                                    {{ product.name|truncatewords:5 }}
+                                </a>
+                            </td>
+                            <td>{{ product.updated }}</td>
+                            <td>
+                                <input type="checkbox" class="form-check-input" 
+                                       {% if product.available %}checked{% endif %} disabled>
+                            </td>
+                            <td class="fw-bold">${{ product.price }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{% url 'shop:product_update' product.id %}" 
+                                       class="btn btn-primary btn-sm me-2 rounded">
+                                        <i class="bi bi-pencil"></i> Update
+                                    </a>
+                                    <form action="{% url 'shop:product_delete' product.id %}" method="post"
+                                          onsubmit="return confirm('Are you sure you want to delete product: {{ product.name|truncatewords:1 }}?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm rounded">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-muted fst-italic">No products found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'pagination.html' with page=products %}
+{% endblock %}
+
+{% block domready %}
+    // Add search func to script
+    // when start to develop admin panel
+{% endblock %}

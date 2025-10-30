@@ -1,0 +1,53 @@
+<div class="modal fade" id="contentModal" tabindex="-1"
+aria-labelledby="contentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="contentForm" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="contentModalLabel">Add content</h5>
+                    <button type="button" class="btn-close"
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                    <label for="contentTypeSelect" class="form-label">
+                        Content type
+                    </label>
+                    <select id="contentTypeSelect" name="type" class="form-select">
+                        <option value="">Select type</option>
+                        <option value="image">Image</option>
+                        <option value="video">Video</option>
+                    </select>
+                    </div>
+                    <div id="contentFormFields">
+                    <div class="mb-3 d-none" id="fieldImage">
+                        <label for="id_content_file" class="form-label">
+                            Image file
+                        </label>
+                        <input type="file" name="content" id="id_content_file"
+                        accept="image/*" class="form-control" />
+                    </div>
+                    <div class="mb-3 d-none" id="fieldVideo">
+                        <label for="id_content_url" class="form-label">
+                            Video URL
+                        </label>
+                        <input type="url" name="content" id="id_content_url"
+                        class="form-control" placeholder="https://..." />
+                    </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal" id="contentCloseBtn">
+                        Close
+                    </button>
+                    <button type="submit" class="btn btn-primary"
+                    id="contentSubmitBtn">
+                        Add
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

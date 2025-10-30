@@ -1,0 +1,192 @@
+{% extends 'shop/base.html' %}
+{% load thumbnail %}
+{% load static %}
+
+{% block title %}
+    {% if product %}
+        Update product {{ product.name|truncatewords:1 }}
+    {% else %}
+        Add product
+    {% endif %} 
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid pb-5">
+  
+  {# Header section #}
+  <div class="row py-5 align-items-center">
+    <div class="col-1 fs-2">
+      <a href="{% url 'shop:admin_product_list' %}" class="text-dark">
+        <i class="bi bi-arrow-left-circle"></i>
+      </a>
+    </div>
+    <div class="col ps-5">
+      <h2>
+        {% if product %}
+            Update product
+            <a href="{{ product.get_absolute_url }}"
+            style="color: inherit;">
+              {{ product.name|truncatewords:5 }}
+            </a>
+        {% else %}
+            Add product
+        {% endif %}
+      </h2>
+    </div>
+  </div>
+
+  {# Main content section #}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6">
+
+        {# Product form #}
+        <form method="post" enctype="multipart/form-data" class="p-3 border rounded shadow-sm bg-white">
+          {% csrf_token %}
+
+          {# Name field #}
+          <div class="mb-3 row">
+            <label for="id_name" class="col-sm-3 col-form-label">{{ form.name.label }}:</label>
+            <div class="col-sm-9">{{ form.name }}</div>
+          </div>
+
+          {# Description field #}
+          <div class="mb-3 row">
+            <label for="id_description" class="col-sm-3 col-form-label">{{ form.description.label }}:</label>
+            <div class="col-sm-9">{{ form.description }}</div>
+          </div>
+
+          {# Category field with Add/Edit buttons #}
+          <div class="mb-3 row align-items-center">
+            <label for="id_category" class="col-sm-3 col-form-label">{{ form.category.label }}:</label>
+            <div class="col-sm-5">{{ form.category }}</div>
+            <div class="col-sm d-flex gap-2">
+              <button type="button" class="btn btn-outline-success rounded-pill" 
+                      data-bs-toggle="modal" data-bs-target="#categoryModal" id="btnAddCategory">
+                <i class="bi bi-plus"></i>
+              </button>
+              <button type="button" class="btn btn-outline-secondary rounded-pill" id="btnEditCategory">
+                <i class="bi bi-pencil"></i>
+              </button>
+            </div>
+          </div>
+
+          {# Image field with preview #}
+          <div class="mb-3 row">
+            <label for="id_image" class="col-sm-3 col-form-label">{{ form.image.label }}:</label>
+            <div class="col-sm-5">
+              {% if product and form.image.value %}
+                <div class="py-3">
+                  {% thumbnail form.image.value 150x150 as im %}
+                  <img src="{{ im.url }}" />
+                </div>
+                <input type="file" name="image" class="form-control" id="id_image"
+                {% if form.image.value %}value="{{ form.image.value }}"{% endif %}
+                />
+              {% else %}
+                {{ form.image }}
+              {% endif %}
+            </div>
+          </div>
+
+          {# Available checkbox #}
+          <div class="mb-3 row">
+            <label for="id_available" class="col-sm-3 col-form-label">{{ form.available.label }}:</label>
+            <div class="col-sm-9 d-flex align-items-center">{{ form.available }}</div>
+          </div>
+
+          {# Price field #}
+          <div class="mb-3 row">
+            <label for="id_price" class="col-sm-3 col-form-label">{{ form.price.label }}:</label>
+            <div class="col-sm-2">{{ form.price }}</div>
+          </div>
+
+          {# Submit button #}
+          <div class="text-end">
+            <input type="submit" value="Accept" class="btn btn-success" />
+          </div>
+        </form>
+
+      </div>
+
+      {# Product content #}
+      <div class="col-md-6">
+        <h5>Product Content
+          <button type="button" class="btn btn-sm btn-outline-success ms-3" id="btnAddContent"
+          data-add-url="{% url 'shop:product_content_add' product.id %}"
+          data-delete-base="{% url 'shop:product_content_delete' 0 %}"
+          data-bs-toggle="modal" data-bs-target="#contentModal">
+            <i class="bi bi-plus"></i> Add
+          </button>
+        </h5>
+
+        <div id="imageContent" class="mt-4">
+          <h6>Images</h6>
+          <div id="imageItems" class="d-flex flex-wrap gap-2">
+            {% for entry in images %}
+              {% with item=entry.item pc_id=entry.pc_id %}
+                <div class="position-relative content-item"
+                data-content-id="{{ pc_id }}">
+                  {% thumbnail item.content 100x100 crop as im %}
+                  <img src="{{ im.url }}" class="img-thumbnail" />
+                  <button type="button" data-content-id="{{ pc_id }}"
+                  class="btn btn-sm btn-outline-danger position-absolute
+                  top-0 end-0 btn-delete-content">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </div>
+              {% endwith %}
+            {% empty %}
+              <p>No additional images yet</p>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div id="videoContent" class="mt-4">
+          <h6>Videos</h6>
+          <div id="videoItems">
+            {% for entry in videos %}
+              {% with item=entry.item pc_id=entry.pc_id %}
+                <div class="content-item mb-3" data-content-id="{{ pc_id }}">
+                  <div class="ratio ratio-16x9">
+                    <iframe width="420" height="315"
+                    src="{{ item.content }}"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                    </iframe>
+                  </div>
+                  <button type="button" data-content-id="{{ pc_id }}"
+                  class="btn btn-sm btn-outline-danger mt-2 btn-delete-content">
+                    Delete
+                  </button>
+                </div>
+              {% endwith %}
+            {% empty %}
+              <p>No videos yet</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# Include category modal #}
+    {% include 'shop/product/admin/category_modal.html' %}
+
+    {# Content modal (inline implementation to ensure it's available) #}
+    {% include 'shop/product/admin/content_modal.html' %}
+
+  </div>
+</div>
+{% endblock %}
+
+{% block domready %}
+  // Load category modal JS dynamically
+  const category_change = document.createElement('script');
+  category_change.src = "{% static 'js/shop/product_modal.js' %}";
+  document.body.appendChild(category_change);
+  
+  const content_change = document.createElement('script');
+  content_change.src = "{% static 'js/shop/product_content_admin.js' %}";
+  document.body.appendChild(content_change);
+{% endblock %}
