@@ -165,13 +165,7 @@ class DescriptionBase(models.Model):
 
     class Meta:
         abstract = True
-
-# class Text(DescriptionBase):
-#     """
-#     Text content model
-#     """
-#     content = models.TextField()
-
+        
 class Image(DescriptionBase):
     """
     Image content

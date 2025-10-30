@@ -4,7 +4,6 @@ Views for seller functionality in shop
 """
 from django.utils import timezone
 from django.db.models import Count, Case, When
-from django.forms.models import model_to_dict
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
@@ -17,6 +16,7 @@ from easy_thumbnails.files import get_thumbnailer
 
 from .models import Product, Category, ProductContent, Video, Image
 from .forms import ProductForm, CategoryForm, VideoForm, ImageForm
+from .utils import get_product_content, generate_thumbnail
 
 CONTENT_FORM_MAP = {
     'image': ImageForm,
@@ -219,6 +219,7 @@ def product_content_add(request, product_id):
             content_type=ContentType.objects.get_for_model(item),
             object_id=item.id,
         )
+        # update related product 'updated' field
         product.updated = timezone.now()
         product.save(update_fields=['updated'])
 
@@ -229,12 +230,10 @@ def product_content_add(request, product_id):
             content_value = item.content.url
         except Exception:
             content_value = getattr(item, 'content', '')
+
         if content_type == 'image':
-            # generate thumbnail URL
-            thumbnailer = get_thumbnailer(item.content)
-            thumb_options = {'size': (100, 100)}
-            thumb = thumbnailer.get_thumbnail(thumb_options)
-            content_value = thumb.url
+            content_value = generate_thumbnail(item)
+
         return JsonResponse({'success': True,
                              'new_item': {
                                  'id': item.id,

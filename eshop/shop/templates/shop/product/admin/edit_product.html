@@ -23,7 +23,11 @@
     <div class="col ps-5">
       <h2>
         {% if product %}
-            Update product {{ product.name|truncatewords:3 }}
+            Update product
+            <a href="{{ product.get_absolute_url }}"
+            style="color: inherit;">
+              {{ product.name|truncatewords:5 }}
+            </a>
         {% else %}
             Add product
         {% endif %}

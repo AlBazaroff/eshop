@@ -1,4 +1,9 @@
 // Content modal / dynamic add/delete JS
+// Purpose:
+// - toggle fields inside the modal based on selected content type (image/video)
+// - submit new Image/Video items via fetch (uses FormData for file uploads)
+// - inject newly created items into the DOM without page reload
+// - handle deletion of items via fetch and update empty-state text
 (() => {
 function getCookie(name) {
     let cookieValue = null;
@@ -167,7 +172,10 @@ if (contentForm) {
     });
 }
 
-// delegated delete handler
+// Delegated delete handler
+// We attach a single click handler to document and detect clicks on
+// elements with class `btn-delete-content`. This keeps event wiring
+// simple and works for dynamic elements inserted after page load.
 document.addEventListener('click', async (e) => {
     const del = e.target.closest('.btn-delete-content');
     if (!del) return;
