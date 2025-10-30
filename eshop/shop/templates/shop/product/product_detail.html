@@ -6,82 +6,100 @@
 {% endblock %}
 
 {% block content %}
-    <style>
-        .thumbnail-wrapper img {
-            transition: transform 0.2s, border-color 0.2s;
-        }
+<div class="container py-5">
+    {# Product header #}
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">{{ product.name }}</h2>
+        <hr class="w-25 mx-auto opacity-75">
+    </div>
 
-        .thumbnail-wrapper:hover img {
-            transform: scale(1.1);
-            border-color: grey;
-            cursor: pointer;
-        }
-        .thumbnail-wrapper i:hover{
-            transform: scale(1.1);
-            border-color: grey;
-            cursor: pointer;
-        }
-        
-        .carousel-item {
-            height: 400px;
-        }
-        
-        .carousel-item img, 
-        .carousel-item video {
-            max-height: 100%;
-            width: auto;
-            margin: 0 auto;
-            display: block;
-        }
-    </style>
-    <div class="container">
-        <h2 class="pt-4">{{ product.name }}</h2>
-        <div class="row pt-4">
-            <div class="col-3 text-center" id="image">
-                {% thumbnail product.image 250x250 as im %}
-                <img class="img-thumbnail border-0" src="{{ im.url }}">
-            </div>
-            <div class="col">
-                <div class="container-fluid">
-                    <p class="fs-6" id="description">
-                        {{ product.description|linebreaks }}
-                    </p>
+    {# Product main section #}
+    <div class="row justify-content-center align-items-start g-5">
+        {# Left column: image and carousel #}
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                {% if videos or images %}
+                <div id="carousel" class="carousel slide" data-bs-ride="false">
+                    <div class="carousel-inner">
+                       <div class="carousel-item active">
+                            {% thumbnail product.image 800x600 as im %}
+                            <img src="{{ im.url }}" class="d-block w-100 object-fit-cover" alt="Product image">
+                        </div>
+                        {% for video in videos %}
+                            <div class="carousel-item">
+                                <div class="ratio ratio-16x9 bg-light">
+                                    <iframe
+                                        src="{{ video.content }}"
+                                        title="Product video"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        referrerpolicy="strict-origin-when-cross-origin"
+                                        allowfullscreen
+                                        class="rounded-4">
+                                    </iframe>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        {% for image in images %}
+                            <div class="carousel-item {% if forloop.first and not videos %}active{% endif %}">
+                                {% thumbnail image.content 800x600 as im %}
+                                <img src="{{ im.url }}" class="d-block w-100 object-fit-cover" alt="Product image">
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {# Controls #}
+                    <button class="carousel-control-prev h-50 align-self-center" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next h-50 align-self-center" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
-                <div class="container-fluid pt-4">
-                    <p class="text-end fw-bold fs-4" id="price">
-                        ${{ product.price }}
-                    </p>
-                </div>
+                {% else %}
+                    {% thumbnail product.image 600x400 as im %}
+                    <img src="{{ im.url }}" class="img-fluid rounded-4" alt="{{ product.name }}">
+
+                {% endif %}
             </div>
         </div>
-        <div class="container-fluid border-top border-3 mb-3">
-            <div class="d-flex overflow-auto align-items-center py-2">
-                {% for video_image in video_images %}
-                    <div class="position-relative flex-shrink-0 thumbnail-wrapper">
-                        <img src="{{ video_image }}" class="img-thumbnail border-0"
-                        width="120" height="120">
-                        <i class="bi bi-play-circle-fill text-white fs-1 position-absolute top-50 start-50 translate-middle"></i>
 
-                    </div>
-                {% endfor %}
-                {% for image in images %}
-                    <div class="flex-shrink-0 thumbnail-wrapper">
-                        {% thumbnail image.content 120x120 crop as im %}
-                        <img src="{{ im.url }}" class="img-thumbnail border-0">
-                    </div>
-                {% endfor %}
-                
+        {# Right column: description, price, form #}
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                {# Description #}
+                <div class="mb-4">
+                    <h5 class="fw-semibold text-secondary mb-2">Description</h5>
+                    <p class="text-muted" id="description">{{ product.description|linebreaks }}</p>
+                </div>
+
+                {# Price #}
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="badge bg-light text-dark border">In stock</span>
+                    <span class="fw-bold fs-4 text-primary">${{ product.price }}</span>
+                    
+                </div>
+
+                {# Add to cart #}
+                <form action="{% url 'cart:add_cart' product.id %}" class="text-end" method="post">
+                    {% csrf_token %}
+                    {{ cart_form }}
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold rounded-3 mt-3">
+                        <i class="bi bi-cart-plus me-2"></i>Add to cart
+                    </button>
+                </form>
             </div>
         </div>
     </div>
-    <div class="container h-10-10 pb-4">
-        <form action="{% url 'cart:add_cart' product.id %}" method="post">
-            <!-- Add functions for form, when add cart -->
-             <div class="text-end">
-                {% csrf_token %}
-                {{ cart_form }}
-                <input type="submit" class="btn btn-primary mt-3" value="Add to cart">
-            </div>
-        </form>
-    </div>
+</div>
+{% endblock %}
+
+{% block domready %}
+    const carouselElement = document.getElementById('carousel');
+    if (carouselElement) {
+        new bootstrap.Carousel(carouselElement, { interval: false });
+    }
 {% endblock %}
