@@ -17,7 +17,7 @@ def get_product_content(product, model):
     items = model.objects.filter(id__in=content.values('object_id'))
     return items
 
-def generate_thumbnail(image, size=(100, 100)):
+def generate_thumbnail(image, size=(100, 100), crop=False):
     """
     Generate a thumbnail for a given image
     Args:
@@ -25,6 +25,18 @@ def generate_thumbnail(image, size=(100, 100)):
         size: tuple of (width, height) for the thumbnail
     """
     thumbnailer = get_thumbnailer(image.content)
-    thumb_options = {'size': size}
+    thumb_options = {'size': size,
+                     'crop': crop}
     thumb = thumbnailer.get_thumbnail(thumb_options)
     return thumb.url
+
+def get_video_thumbnail_url(video):
+    """
+    Get the thumbnail URL for a video
+    Args:
+        video: Video instance
+    Returns:
+        URL string of the video's thumbnail
+    """
+    url = video.content
+    return f'https://img.youtube.com/vi/{url.split('/')[-1]}/0.jpg'

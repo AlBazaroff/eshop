@@ -6,12 +6,40 @@
 {% endblock %}
 
 {% block content %}
+    <style>
+        .thumbnail-wrapper img {
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .thumbnail-wrapper:hover img {
+            transform: scale(1.1);
+            border-color: grey;
+            cursor: pointer;
+        }
+        .thumbnail-wrapper i:hover{
+            transform: scale(1.1);
+            border-color: grey;
+            cursor: pointer;
+        }
+        
+        .carousel-item {
+            height: 400px;
+        }
+        
+        .carousel-item img, 
+        .carousel-item video {
+            max-height: 100%;
+            width: auto;
+            margin: 0 auto;
+            display: block;
+        }
+    </style>
     <div class="container">
         <h2 class="pt-4">{{ product.name }}</h2>
         <div class="row pt-4">
             <div class="col-3 text-center" id="image">
                 {% thumbnail product.image 250x250 as im %}
-                <img src="{{ im.url }}">
+                <img class="img-thumbnail border-0" src="{{ im.url }}">
             </div>
             <div class="col">
                 <div class="container-fluid">
@@ -24,6 +52,25 @@
                         ${{ product.price }}
                     </p>
                 </div>
+            </div>
+        </div>
+        <div class="container-fluid border-top border-3 mb-3">
+            <div class="d-flex overflow-auto align-items-center py-2">
+                {% for video_image in video_images %}
+                    <div class="position-relative flex-shrink-0 thumbnail-wrapper">
+                        <img src="{{ video_image }}" class="img-thumbnail border-0"
+                        width="120" height="120">
+                        <i class="bi bi-play-circle-fill text-white fs-1 position-absolute top-50 start-50 translate-middle"></i>
+
+                    </div>
+                {% endfor %}
+                {% for image in images %}
+                    <div class="flex-shrink-0 thumbnail-wrapper">
+                        {% thumbnail image.content 120x120 crop as im %}
+                        <img src="{{ im.url }}" class="img-thumbnail border-0">
+                    </div>
+                {% endfor %}
+                
             </div>
         </div>
     </div>

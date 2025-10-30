@@ -232,7 +232,7 @@ def product_content_add(request, product_id):
             content_value = getattr(item, 'content', '')
 
         if content_type == 'image':
-            content_value = generate_thumbnail(item)
+            content_value = generate_thumbnail(item, crop=True)
 
         return JsonResponse({'success': True,
                              'new_item': {

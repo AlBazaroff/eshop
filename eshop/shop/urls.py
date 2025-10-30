@@ -13,6 +13,8 @@ urlpatterns = [
           name='product_detail'),
      path('search/<str:name>/', views.product_search,
           name='product_search'),
+     path('content/<str:type>/<int:id>/', views.get_content,
+          name='get_content'),
      # ADMIN
      # Product CRUD
      path('admin/product/product_list/', views.admin_product_list,
